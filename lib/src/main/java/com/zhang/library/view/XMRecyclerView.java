@@ -17,21 +17,21 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  *
  * @author ZhangXiaoMing 2021-01-05 16:07 星期二
  */
-public class MRecyclerView extends RecyclerView {
+public class XMRecyclerView extends RecyclerView {
 
-    public MRecyclerView(@NonNull Context context) {
+    public XMRecyclerView(@NonNull Context context) {
         super(context);
 
         init();
     }
 
-    public MRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public XMRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
         init();
     }
 
-    public MRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public XMRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         init();
@@ -152,7 +152,7 @@ public class MRecyclerView extends RecyclerView {
      * @see #HORIZONTAL
      */
     public void addDivider(@Orientation int orientation, int size, int color, int padding) {
-        EqualDividerItemDecoration decoration = new EqualDividerItemDecoration(orientation, size, color);
+        XMEqualDividerItemDecoration decoration = new XMEqualDividerItemDecoration(orientation, size, color);
         decoration.setPadding(padding);
 
         addItemDecoration(decoration);
@@ -168,7 +168,7 @@ public class MRecyclerView extends RecyclerView {
      * @see #HORIZONTAL
      */
     public void addDivider(@Orientation int orientation, Drawable drawable) {
-        EqualDividerItemDecoration decoration = new EqualDividerItemDecoration(orientation, drawable);
+        XMEqualDividerItemDecoration decoration = new XMEqualDividerItemDecoration(orientation, drawable);
 
         addItemDecoration(decoration);
     }
@@ -184,7 +184,7 @@ public class MRecyclerView extends RecyclerView {
      * @see #HORIZONTAL
      */
     public void addDivider(@Orientation int orientation, Drawable drawable, int padding) {
-        EqualDividerItemDecoration decoration = new EqualDividerItemDecoration(orientation, drawable);
+        XMEqualDividerItemDecoration decoration = new XMEqualDividerItemDecoration(orientation, drawable);
         decoration.setPadding(padding);
 
         addItemDecoration(decoration);

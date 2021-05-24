@@ -23,7 +23,7 @@ import androidx.appcompat.widget.AppCompatImageView;
  *
  * @author ZhangXiaoMing 2020-12-23 13:42 星期三
  */
-public class HexagonImageView extends AppCompatImageView {
+public class XMHexagonImageView extends AppCompatImageView {
 
     private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
     private static final int COLORDRAWABLE_DIMENSION = 1;
@@ -35,17 +35,17 @@ public class HexagonImageView extends AppCompatImageView {
     private int mWidth = 0;
     private Bitmap mBitmap;
 
-    public HexagonImageView(Context context) {
+    public XMHexagonImageView(Context context) {
         super(context);
         init();
     }
 
-    public HexagonImageView(Context context, AttributeSet attrs) {
+    public XMHexagonImageView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
         init();
     }
 
-    public HexagonImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public XMHexagonImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

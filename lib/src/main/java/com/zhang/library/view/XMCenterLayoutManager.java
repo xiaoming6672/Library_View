@@ -11,17 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class CenterLayoutManager extends LinearLayoutManager {
+public class XMCenterLayoutManager extends LinearLayoutManager {
 
-    public CenterLayoutManager(Context context) {
+    public XMCenterLayoutManager(Context context) {
         super(context);
     }
 
-    public CenterLayoutManager(Context context, int orientation, boolean reverseLayout) {
+    public XMCenterLayoutManager(Context context, int orientation, boolean reverseLayout) {
         super(context, orientation, reverseLayout);
     }
 
-    public CenterLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public XMCenterLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 

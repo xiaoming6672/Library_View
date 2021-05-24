@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  *
  * @author ZhangXiaoMing 2020-11-27 10:28 星期五
  */
-public class EqualDividerItemDecoration extends RecyclerView.ItemDecoration {
+public class XMEqualDividerItemDecoration extends RecyclerView.ItemDecoration {
 
     /** 分割线方向，如果设置的是{@link RecyclerView#VERTICAL}，则表示在列表竖直方向话分割线，即分割线是横向的；反之是竖向的 */
     private int mOrientation = RecyclerView.VERTICAL;
@@ -41,12 +41,12 @@ public class EqualDividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private final Rect mBounds = new Rect();
 
-    public EqualDividerItemDecoration() {
+    public XMEqualDividerItemDecoration() {
         mSize = ResUtils.dp2px(1);
         mDivider = new ColorDrawable(Color.TRANSPARENT);
     }
 
-    public EqualDividerItemDecoration(@RecyclerView.Orientation int orientation, int size) {
+    public XMEqualDividerItemDecoration(@RecyclerView.Orientation int orientation, int size) {
         checkOrientation(orientation);
 
         this.mOrientation = orientation;
@@ -54,7 +54,7 @@ public class EqualDividerItemDecoration extends RecyclerView.ItemDecoration {
         mDivider = new ColorDrawable(Color.TRANSPARENT);
     }
 
-    public EqualDividerItemDecoration(@RecyclerView.Orientation int orientation, Drawable drawable) {
+    public XMEqualDividerItemDecoration(@RecyclerView.Orientation int orientation, Drawable drawable) {
         checkOrientation(orientation);
         checkDrawable(drawable);
 
@@ -63,7 +63,7 @@ public class EqualDividerItemDecoration extends RecyclerView.ItemDecoration {
         this.mSize = mDivider.getIntrinsicWidth();
     }
 
-    public EqualDividerItemDecoration(@RecyclerView.Orientation int orientation, int size, int color) {
+    public XMEqualDividerItemDecoration(@RecyclerView.Orientation int orientation, int size, int color) {
         checkOrientation(orientation);
 
         this.mOrientation = orientation;
@@ -72,7 +72,7 @@ public class EqualDividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     //<editor-fold desc="设置、获取属性">
-    public EqualDividerItemDecoration setOrientation(@RecyclerView.Orientation int orientation) {
+    public XMEqualDividerItemDecoration setOrientation(@RecyclerView.Orientation int orientation) {
         checkOrientation(orientation);
 
         this.mOrientation = orientation;
@@ -80,7 +80,7 @@ public class EqualDividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     /** 设置分割线图案 */
-    public EqualDividerItemDecoration setDrawable(Drawable drawable) {
+    public XMEqualDividerItemDecoration setDrawable(Drawable drawable) {
         checkDrawable(drawable);
 
         this.mDivider = drawable;
@@ -89,13 +89,13 @@ public class EqualDividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     /** 设置分割线大小 */
-    public EqualDividerItemDecoration setSize(int size) {
+    public XMEqualDividerItemDecoration setSize(int size) {
         this.mSize = size;
         return this;
     }
 
     /** 设置分割线缩进大小 */
-    public EqualDividerItemDecoration setPadding(int padding) {
+    public XMEqualDividerItemDecoration setPadding(int padding) {
         if (mOrientation == RecyclerView.VERTICAL) {
             this.mPaddingLeft = padding;
             this.mPaddingRight = padding;
@@ -107,25 +107,25 @@ public class EqualDividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     /** 设置分割线左缩进大小 */
-    public EqualDividerItemDecoration setPaddingLeft(int paddingLeft) {
+    public XMEqualDividerItemDecoration setPaddingLeft(int paddingLeft) {
         this.mPaddingLeft = paddingLeft;
         return this;
     }
 
     /** 设置分割线右缩进大小 */
-    public EqualDividerItemDecoration setPaddingRight(int paddingRight) {
+    public XMEqualDividerItemDecoration setPaddingRight(int paddingRight) {
         this.mPaddingRight = paddingRight;
         return this;
     }
 
     /** 设置分割线上缩进大小 */
-    public EqualDividerItemDecoration setPaddingTop(int paddingTop) {
+    public XMEqualDividerItemDecoration setPaddingTop(int paddingTop) {
         this.mPaddingTop = paddingTop;
         return this;
     }
 
     /** 设置分割线下缩进大小 */
-    public EqualDividerItemDecoration setPaddingBottom(int paddingBottom) {
+    public XMEqualDividerItemDecoration setPaddingBottom(int paddingBottom) {
         this.mPaddingBottom = paddingBottom;
         return this;
     }
