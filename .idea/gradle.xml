@@ -14,7 +14,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/lib" />
-            <option value="$PROJECT_DIR$/pull_to_refresh" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

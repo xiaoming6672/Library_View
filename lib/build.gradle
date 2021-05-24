@@ -39,6 +39,5 @@ dependencies {
     api 'androidx.recyclerview:recyclerview:1.2.0-alpha06'
     api 'com.github.xiaoming6672:Library_utils:1.0.7'
     api 'com.github.xiaoming6672:Library_adapter:1.0.6'
-    api 'com.github.chrisbanes:Android-PullToRefresh:v2.1'
 
 }
