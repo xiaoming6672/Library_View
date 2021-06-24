@@ -60,7 +60,8 @@ public class XMEqualDividerItemDecoration extends RecyclerView.ItemDecoration {
 
         this.mOrientation = orientation;
         this.mDivider = drawable;
-        this.mSize = mDivider.getIntrinsicWidth();
+
+        this.mSize = orientation == RecyclerView.VERTICAL ? mDivider.getIntrinsicHeight() : mDivider.getIntrinsicWidth();
     }
 
     public XMEqualDividerItemDecoration(@RecyclerView.Orientation int orientation, int size, int color) {
