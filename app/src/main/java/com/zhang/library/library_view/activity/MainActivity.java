@@ -1,6 +1,8 @@
 package com.zhang.library.library_view.activity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import com.zhang.library.library_view.BuildConfig;
 import com.zhang.library.library_view.R;
@@ -37,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        findViewById(R.id.iv_hexagon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "六边形图片", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         RecyclerView rv_content = findViewById(R.id.rv_content);

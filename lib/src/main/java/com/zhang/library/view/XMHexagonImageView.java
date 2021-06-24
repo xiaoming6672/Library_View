@@ -7,14 +7,11 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.RectF;
-import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
@@ -26,13 +23,13 @@ import androidx.appcompat.widget.AppCompatImageView;
 public class XMHexagonImageView extends AppCompatImageView {
 
     private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
-    private static final int COLORDRAWABLE_DIMENSION = 1;
+    private static final int COLOR_DRAWABLE_DIMENSION = 1;
     private static final Matrix mShaderMatrix = new Matrix();
     private static final Paint mBitmapPaint = new Paint();
     private BitmapShader mBitmapShader;
     private int mBitmapWidth;
     private int mBitmapHeight;
-    private int mWidth = 0;
+    private int mViewWidth = 0;
     private Bitmap mBitmap;
 
     public XMHexagonImageView(Context context) {
@@ -78,21 +75,21 @@ public class XMHexagonImageView extends AppCompatImageView {
         if (mPath == null) {
             mPath = new Path();
         }
-        float radius = mWidth / 2;
-        float distance = (float) ((float) mWidth / 4 * (2 - Math.sqrt(3)));//六边形到边到内切圆的距离
+        float radius = mViewWidth / 2;
+        float distance = (float) ((float) mViewWidth / 4 * (2 - Math.sqrt(3)));//六边形到边到内切圆的距离
         float halfRadius = radius / 2;
 
         float p0x = radius;
         float p0y = 0;
 
-        float p1x = mWidth - distance;
+        float p1x = mViewWidth - distance;
         float p1y = halfRadius;
 
         float p2x = p1x;
-        float p2y = mWidth * 3 / 4;
+        float p2y = mViewWidth * 3 / 4;
 
         float p3x = radius;
-        float p3y = mWidth;
+        float p3y = mViewWidth;
 
         float p4x = distance;
         float p4y = p2y;
@@ -112,60 +109,15 @@ public class XMHexagonImageView extends AppCompatImageView {
         return mPath;
     }
 
-    private Boolean DownOnEffectiveArea = false;
-
-
-    @Override
-    public void setOnTouchListener(OnTouchListener l) {
-        super.setOnTouchListener(l);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                CheckIfDownOnffectiveArea(event);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                break;
-            case MotionEvent.ACTION_UP:
-                break;
-        }
-        return super.onTouchEvent(event);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        //if (event.getAction() == MotionEvent.ACTION_DOWN) {
-        if (!CheckIfDownOnffectiveArea(event)) {
-            return false;
-        }
-        // }
-        return super.dispatchTouchEvent(event);
-    }
-
-    private Boolean CheckIfDownOnffectiveArea(MotionEvent event) {
-        DownOnEffectiveArea = computeRegion(mPath).contains((int) event.getX(), (int) event.getY());
-        return DownOnEffectiveArea;
-    }
-
-    private Region computeRegion(Path path) {
-        Region region = new Region();
-        RectF f = new RectF();
-        path.computeBounds(f, true);
-        region.setPath(path, new Region((int) f.left, (int) f.top, (int) f.right, (int) f.bottom));
-        return region;
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);//限制为正方形
-        mWidth = Math.min(getMeasuredWidth(), getMeasuredHeight());
-        setMeasuredDimension(mWidth, mWidth);
+        mViewWidth = Math.min(getMeasuredWidth(), getMeasuredHeight());
+        setMeasuredDimension(mViewWidth, mViewWidth);
     }
 
-    public int getmWidth() {
-        return mWidth;
+    public int getViewWidth() {
+        return mViewWidth;
     }
 
     @Override
@@ -197,15 +149,15 @@ public class XMHexagonImageView extends AppCompatImageView {
         try {
             Bitmap bitmap;
             if (drawable instanceof ColorDrawable) {
-                bitmap = Bitmap.createBitmap(COLORDRAWABLE_DIMENSION,
-                        COLORDRAWABLE_DIMENSION, BITMAP_CONFIG);
+                bitmap = Bitmap.createBitmap(COLOR_DRAWABLE_DIMENSION,
+                        COLOR_DRAWABLE_DIMENSION, BITMAP_CONFIG);
             } else {
                 bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
                         drawable.getIntrinsicHeight(), BITMAP_CONFIG);
             }
 
             Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, mWidth, mWidth);
+            drawable.setBounds(0, 0, mViewWidth, mViewWidth);
             drawable.draw(canvas);
             return bitmap;
         } catch (OutOfMemoryError e) {
@@ -229,15 +181,15 @@ public class XMHexagonImageView extends AppCompatImageView {
         float scale;
         mShaderMatrix.set(null);
         if (mBitmapWidth != mBitmapHeight) {
-            scale = Math.max((float) mWidth / mBitmapWidth, (float) mWidth / mBitmapHeight);
+            scale = Math.max((float) mViewWidth / mBitmapWidth, (float) mViewWidth / mBitmapHeight);
         } else {
-            scale = (float) mWidth / mBitmapWidth;
+            scale = (float) mViewWidth / mBitmapWidth;
         }
 
         mShaderMatrix.setScale(scale, scale);//放大铺满
 
-        float dx = mWidth - mBitmapWidth * scale;
-        float dy = mWidth - mBitmapHeight * scale;
+        float dx = mViewWidth - mBitmapWidth * scale;
+        float dy = mViewWidth - mBitmapHeight * scale;
         mShaderMatrix.postTranslate(dx / 2, dy / 2);//平移居中
         mBitmapShader.setLocalMatrix(mShaderMatrix);
     }
