@@ -7,23 +7,25 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.zhang.library.adapter.BaseRecyclerAdapter;
 import com.zhang.library.adapter.viewholder.base.BaseRecyclerViewHolder;
 import com.zhang.library.utils.CollectionUtils;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
+import java.lang.ref.WeakReference;
 
 /**
  * 跑马灯功能的RecyclerView
  *
  * @author ZhangXiaoMing 2021-06-23 17:01 星期三
  */
-public class SmoothMarqueeRecyclerView extends RecyclerView {
+public class XMSlideMarqueeView extends RecyclerView {
 
     /** 滑动的Runnable */
-    private Runnable mMarqueeRunnable;
+    private XMSlideRunnable mSlideRunnable;
 
     /** 每次滚动的距离 */
     private int mScrollDistance;
@@ -33,19 +35,19 @@ public class SmoothMarqueeRecyclerView extends RecyclerView {
     /** 跑马灯滑动间隔时间 */
     private int mScrollTimeMillis;
 
-    public SmoothMarqueeRecyclerView(@NonNull Context context) {
+    public XMSlideMarqueeView(@NonNull Context context) {
         super(context);
 
         init(null);
     }
 
-    public SmoothMarqueeRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public XMSlideMarqueeView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
         init(attrs);
     }
 
-    public SmoothMarqueeRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public XMSlideMarqueeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         init(attrs);
@@ -63,11 +65,16 @@ public class SmoothMarqueeRecyclerView extends RecyclerView {
     }
 
     @Override
+    public void setAdapter(@Nullable Adapter adapter) {
+        super.setAdapter(adapter);
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         stop();
 
-        if (mMarqueeRunnable != null) {
-            mMarqueeRunnable = null;
+        if (mSlideRunnable != null) {
+            mSlideRunnable = null;
         }
 
         super.onDetachedFromWindow();
@@ -79,14 +86,16 @@ public class SmoothMarqueeRecyclerView extends RecyclerView {
             mScrollOrientation = HORIZONTAL;
             mScrollTimeMillis = 10;
         } else {
-            TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.SmoothMarqueeRecyclerView);
+            TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.XMSlideMarqueeView);
 
-            mScrollDistance = typedArray.getInteger(R.styleable.SmoothMarqueeRecyclerView_smooth_distance, 1);
-            mScrollOrientation = typedArray.getInt(R.styleable.SmoothMarqueeRecyclerView_smooth_orientation, 0);
-            mScrollTimeMillis = typedArray.getInteger(R.styleable.SmoothMarqueeRecyclerView_smooth_timemillis, 10);
+            mScrollDistance = typedArray.getInteger(R.styleable.XMSlideMarqueeView_slide_distance, 1);
+            mScrollOrientation = typedArray.getInt(R.styleable.XMSlideMarqueeView_slide_orientation, 0);
+            mScrollTimeMillis = typedArray.getInteger(R.styleable.XMSlideMarqueeView_slide_timemillis, 10);
 
             typedArray.recycle();
         }
+
+        mSlideRunnable = new XMSlideRunnable(this);
     }
 
 
@@ -98,6 +107,7 @@ public class SmoothMarqueeRecyclerView extends RecyclerView {
         this.mScrollDistance = scrollDistance;
     }
 
+    @Orientation
     public int getScrollOrientation() {
         return mScrollOrientation;
     }
@@ -122,7 +132,7 @@ public class SmoothMarqueeRecyclerView extends RecyclerView {
         stop();
 
         try {
-            getHandler().post(getMarqueeRunnable());
+            post(mSlideRunnable);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -131,37 +141,44 @@ public class SmoothMarqueeRecyclerView extends RecyclerView {
     /** 结束滑动 */
     public void stop() {
         try {
-            getHandler().removeCallbacks(getMarqueeRunnable());
+            removeCallbacks(mSlideRunnable);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private Runnable getMarqueeRunnable() {
-        if (mMarqueeRunnable == null) {
-            mMarqueeRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (mScrollOrientation == VERTICAL)
-                        scrollBy(0, mScrollDistance);
-                    else
-                        scrollBy(mScrollDistance, 0);
+    /** 滑动的Runnable */
+    static class XMSlideRunnable implements Runnable {
 
-                    getHandler().postDelayed(this, mScrollTimeMillis);
-                }
-            };
+        private final WeakReference<XMSlideMarqueeView> mReference;
+
+        public XMSlideRunnable(XMSlideMarqueeView slideMarqueeView) {
+            this.mReference = new WeakReference<>(slideMarqueeView);
         }
 
-        return mMarqueeRunnable;
-    }
+        @Override
+        public void run() {
+            XMSlideMarqueeView view = mReference.get();
 
+            if (view == null)
+                return;
+
+            int orientation = view.getScrollOrientation();
+            if (orientation == HORIZONTAL)
+                view.scrollBy(view.getScrollDistance(), 0);
+            else
+                view.scrollBy(0, view.getScrollDistance());
+
+            view.postDelayed(this, view.getScrollTimeMillis());
+        }
+    }
 
     /**
      * 平滑移动的跑马灯列表的基类适配器
      *
      * @author ZhangXiaoMing 2021-06-23 17:15 星期三
      */
-    public static abstract class SmoothMarqueeAdapter<VH extends SmoothMarqueeViewHolder<T>, T> extends BaseRecyclerAdapter<T> {
+    public static abstract class XMSlideMarqueeAdapter<VH extends XMSlideMarqueeViewHolder<T>, T> extends BaseRecyclerAdapter<T> {
 
         @Override
         public int getItemCount() {
@@ -185,13 +202,13 @@ public class SmoothMarqueeRecyclerView extends RecyclerView {
      *
      * @author ZhangXiaoMing 2021-06-23 17:19 星期三
      */
-    public static abstract class SmoothMarqueeViewHolder<T> extends BaseRecyclerViewHolder<T> {
+    public static abstract class XMSlideMarqueeViewHolder<T> extends BaseRecyclerViewHolder<T> {
 
-        public SmoothMarqueeViewHolder(@NonNull View itemView) {
+        public XMSlideMarqueeViewHolder(@NonNull View itemView) {
             super(itemView);
         }
 
-        public SmoothMarqueeViewHolder(ViewGroup parent, int layoutId) {
+        public XMSlideMarqueeViewHolder(ViewGroup parent, int layoutId) {
             super(parent, layoutId);
         }
 
