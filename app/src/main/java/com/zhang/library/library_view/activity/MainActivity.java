@@ -4,20 +4,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.zhang.library.library_view.BuildConfig;
 import com.zhang.library.library_view.R;
 import com.zhang.library.library_view.adapter.TestAdapter;
 import com.zhang.library.library_view.model.TestModel;
 import com.zhang.library.utils.LogUtils;
 import com.zhang.library.utils.context.ContextUtils;
+import com.zhang.library.view.XMSlideMarqueeView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        RecyclerView rv_content = findViewById(R.id.rv_content);
+        XMSlideMarqueeView rv_content = findViewById(R.id.rv_content);
 
         rv_content.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             list.add(new TestModel());
         }
         getAdapter().getDataHolder().setDataList(list);
+        ((XMSlideMarqueeView) findViewById(R.id.rv_content)).start();
     }
 
     private TestAdapter getAdapter() {

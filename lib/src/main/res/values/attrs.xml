@@ -6,10 +6,10 @@
         <attr name="strokeWidth" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="SmoothMarqueeRecyclerView">
-        <attr name="smooth_distance" format="integer" />
-        <attr name="smooth_timemillis" format="integer" />
-        <attr name="smooth_orientation" format="enum">
+    <declare-styleable name="XMSlideMarqueeView">
+        <attr name="slide_distance" format="integer" />
+        <attr name="slide_timemillis" format="integer" />
+        <attr name="slide_orientation" format="enum">
             <enum name="horizontal" value="0" />
             <enum name="vertical" value="1" />
         </attr>
