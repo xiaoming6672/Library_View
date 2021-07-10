@@ -5,15 +5,22 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.IntDef;
+import androidx.appcompat.widget.AppCompatTextView;
+
 import com.zhang.library.utils.context.ResUtils;
 
-import androidx.appcompat.widget.AppCompatTextView;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * 文字带描边效果的TextView
@@ -22,131 +29,182 @@ import androidx.appcompat.widget.AppCompatTextView;
  */
 public class XMStrokeTextView extends AppCompatTextView {
 
-    private final TextView mInnerText;///用于描边的TextView
+    public static final int HORIZONTAL = 0;
+    public static final int VERTICAL = 1;
 
-    private TextPaint mPaint;
+    @IntDef({HORIZONTAL, VERTICAL})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Orientation {
+    }
+
+    private final TextView mStrokeText;///用于描边的TextView
+
+    private float mStrokeWidth;
+    private ColorStateList mStrokeColor;
+
+    private int mOrientation = HORIZONTAL;
+    private int[] mGradientColor;
 
     public XMStrokeTextView(Context context) {
-        super(context);
-        mInnerText = new TextView(context);
-
-        init(null);
+        this(context, null);
     }
 
     public XMStrokeTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        mInnerText = new TextView(context, attrs);
-
-        init(attrs);
+        this(context, attrs, 0);
     }
 
     public XMStrokeTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mInnerText = new TextView(context, attrs, defStyleAttr);
+
+        mStrokeText = new TextView(context, attrs, defStyleAttr);
+        mStrokeText.setGravity(getGravity());
+
         init(attrs);
     }
 
     private void init(AttributeSet attrs) {
-        ColorStateList innerColor;
-        ColorStateList strokeColor;
-        float strokeWidth;
-
         if (attrs == null) {
-            innerColor = ColorStateList.valueOf(Color.BLACK);
-            strokeColor = ColorStateList.valueOf(Color.BLACK);
-            strokeWidth = ResUtils.dp2px(1);
+            mStrokeColor = ColorStateList.valueOf(Color.TRANSPARENT);
+            mStrokeWidth = 0;
         } else {
-            TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.XMStrokeTextView);
-            innerColor = typedArray.getColorStateList(R.styleable.XMStrokeTextView_innerColor);
-            strokeColor = typedArray.getColorStateList(R.styleable.XMStrokeTextView_strokeColor);
-            strokeWidth = typedArray.getDimension(R.styleable.XMStrokeTextView_strokeWidth, ResUtils.dp2px(1));
-            typedArray.recycle();
+            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.XMStrokeTextView);
+            mStrokeColor = a.getColorStateList(R.styleable.XMStrokeTextView_strokeColor);
+            mStrokeWidth = a.getDimension(R.styleable.XMStrokeTextView_strokeWidth, ResUtils.dp2px(1));
+            mOrientation = a.getInteger(R.styleable.XMStrokeTextView_gradientOrientation, HORIZONTAL);
+
+            Integer startColor = null, centerColor = null, endColor = null;
+            if (a.hasValue(R.styleable.XMStrokeTextView_gradientStart))
+                startColor = a.getColor(R.styleable.XMStrokeTextView_gradientStart, getCurrentTextColor());
+
+            if (a.hasValue(R.styleable.XMStrokeTextView_gradientCenter))
+                centerColor = a.getColor(R.styleable.XMStrokeTextView_gradientCenter, getCurrentTextColor());
+
+            if (a.hasValue(R.styleable.XMStrokeTextView_gradientEnd))
+                endColor = a.getColor(R.styleable.XMStrokeTextView_gradientEnd, getCurrentTextColor());
+
+            a.recycle();
+
+            if (startColor != null && endColor != null) {
+                if (centerColor != null)
+                    mGradientColor = new int[]{startColor, centerColor, endColor};
+                else
+                    mGradientColor = new int[]{startColor, endColor};
+            }
+
         }
-
-        mInnerText.setTextColor(innerColor);
-        TextPaint innerPaint = mInnerText.getPaint();
-        innerPaint.setStrokeWidth(0);
-        innerPaint.setStyle(TextPaint.Style.FILL_AND_STROKE);
-        innerPaint.setFakeBoldText(true);
-        mInnerText.setGravity(getGravity());
-
-        this.setTextColor(strokeColor);
-        TextPaint paint = getTextPaint();
-        paint.setStyle(TextPaint.Style.FILL_AND_STROKE);
-        paint.setStrokeWidth(strokeWidth);
-        paint.setFakeBoldText(false);
     }
 
     @Override
     public void setLayoutParams(ViewGroup.LayoutParams params) {
         super.setLayoutParams(params);
-        mInnerText.setLayoutParams(params);
+        mStrokeText.setLayoutParams(params);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        CharSequence text = mInnerText.getText();
+        CharSequence text = mStrokeText.getText();
         if (TextUtils.isEmpty(text) || !text.equals(getText())) {
-            mInnerText.setText(getText());
+            mStrokeText.setText(getText());
             this.postInvalidate();
         }
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        mInnerText.measure(widthMeasureSpec, heightMeasureSpec);
+        mStrokeText.measure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        mInnerText.layout(left, top, right, bottom);
+        mStrokeText.layout(left, top, right, bottom);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        mInnerText.setEnabled(enabled);
+        mStrokeText.setEnabled(enabled);
     }
 
     @Override
     public void setSelected(boolean selected) {
         super.setSelected(selected);
-        mInnerText.setSelected(selected);
+        mStrokeText.setSelected(selected);
     }
 
     @Override
     public void setText(CharSequence text, BufferType type) {
         super.setText(text, type);
-        if (mInnerText != null) {
-            mInnerText.setText(text, type);
+        if (mStrokeText != null) {
+            mStrokeText.setText(text, type);
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        mStrokeText.setTextColor(mStrokeColor);
+        mStrokeText.setTextSize(TypedValue.COMPLEX_UNIT_PX, getTextSize());
+        TextPaint strokePaint = mStrokeText.getPaint();
+        strokePaint.setStrokeWidth(mStrokeWidth);
+        strokePaint.setStyle(TextPaint.Style.FILL_AND_STROKE);
+        mStrokeText.draw(canvas);
+
+        TextPaint paint = getPaint();
+        paint.setShader(getGradient());
         super.onDraw(canvas);
-        mInnerText.draw(canvas);
     }
 
-    /** 设置内部文字颜色 */
-    public void setInnerTextColor(int color) {
-        mInnerText.setTextColor(color);
+    private LinearGradient getGradient() {
+        LinearGradient gradient;
+        if (mOrientation == VERTICAL) {
+            gradient = new LinearGradient(0, 0, 0, getHeight(), mGradientColor, null, Shader.TileMode.CLAMP);
+        } else {
+            gradient = new LinearGradient(0, 0, getWidth(), 0, mGradientColor, null, Shader.TileMode.CLAMP);
+        }
+
+        return gradient;
     }
 
     /** 设置描边颜色 */
     public void setStrokeColor(int color) {
-        setTextColor(color);
+        mStrokeColor = ColorStateList.valueOf(color);
+        invalidate();
     }
 
     /** 设置描边宽度，单位：px */
     public void setStrokeWidth(float width) {
-        TextPaint paint = getTextPaint();
-        paint.setStrokeWidth(width);
+        mStrokeWidth = width;
+        invalidate();
     }
 
-    private TextPaint getTextPaint() {
-        if (mPaint == null) {
-            mPaint = getPaint();
-        }
-        return mPaint;
+    /**
+     * 设置颜色渐变方向
+     *
+     * @param orientation 渐变方向
+     */
+    public void setGradientOrientation(@Orientation int orientation) {
+        this.mOrientation = orientation;
+        invalidate();
+    }
+
+    /**
+     * 设置渐变颜色
+     *
+     * @param startColor 起始颜色
+     * @param endColor   结束颜色
+     */
+    public void setGradientColor(int startColor, int endColor) {
+        mGradientColor = new int[]{startColor, endColor};
+        invalidate();
+    }
+
+    /**
+     * 设置渐变颜色
+     *
+     * @param startColor  起始颜色
+     * @param centerColor 中间颜色
+     * @param endColor    结束颜色
+     */
+    public void setGradientColor(int startColor, int centerColor, int endColor) {
+        mGradientColor = new int[]{startColor, centerColor, endColor};
+        invalidate();
     }
 }

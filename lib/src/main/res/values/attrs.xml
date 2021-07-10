@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="XMStrokeTextView">
-        <attr name="innerColor" format="color" />
         <attr name="strokeColor" format="color" />
         <attr name="strokeWidth" format="dimension" />
+        <attr name="gradientOrientation" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+        <attr name="gradientStart" format="color" />
+        <attr name="gradientCenter" format="color" />
+        <attr name="gradientEnd" format="color" />
     </declare-styleable>
 
     <declare-styleable name="XMSlideMarqueeView">
