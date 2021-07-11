@@ -6,64 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
-    <com.zhang.library.view.XMSlideMarqueeView
-        android:id="@+id/rv_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:overScrollMode="ifContentScrolls"
-        android:visibility="visible"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:slide_orientation="vertical"
-        tools:listitem="@layout/item_test_recyclerview" />
-
     <com.zhang.library.view.XMStrokeTextView
-        android:layout_width="match_parent"
+        android:id="@+id/tv_my_stroke"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginVertical="50dp"
         android:gravity="center"
-        android:text="@string/app_name"
+        android:text="去获取"
+        android:textColor="#FF00FF"
         android:textSize="30sp"
-        app:innerColor="#FF00FF"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:gradientCenter="@android:color/holo_red_dark"
+        app:gradientEnd="@android:color/holo_blue_bright"
+        app:gradientOrientation="vertical"
+        app:gradientStart="@android:color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="#0000FF"
-        app:strokeWidth="4dp" />
-
-    <com.zhang.library.view.XMAutoSizeTextView
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="@string/app_name"
-        android:textColor="#000"
-        android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:text="@string/app_name"
-        android:textColor="#000"
-        android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.zhang.library.library_view.view.TestTextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/app_name"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:textStyle="bold|italic"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:strokeWidth="4dp"
+        tools:ignore="HardcodedText"
+        tools:textColor="#000000" />
 
     <com.zhang.library.view.XMHexagonImageView
         android:id="@+id/iv_hexagon"
@@ -77,5 +39,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.3" />
+
+    <com.zhang.library.view.XMCircleImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
