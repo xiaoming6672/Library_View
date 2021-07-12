@@ -14,13 +14,13 @@ import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.IntDef;
-import androidx.appcompat.widget.AppCompatTextView;
-
 import com.zhang.library.utils.context.ResUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.IntDef;
+import androidx.appcompat.widget.AppCompatTextView;
 
 /**
  * 文字带描边效果的TextView
@@ -147,8 +147,10 @@ public class XMStrokeTextView extends AppCompatTextView {
         strokePaint.setStyle(TextPaint.Style.FILL_AND_STROKE);
         mStrokeText.draw(canvas);
 
-        TextPaint paint = getPaint();
-        paint.setShader(getGradient());
+        if (mGradientColor != null) {
+            TextPaint paint = getPaint();
+            paint.setShader(getGradient());
+        }
         super.onDraw(canvas);
     }
 
