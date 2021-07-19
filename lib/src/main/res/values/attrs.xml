@@ -21,4 +21,17 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="XMRoundedImageView">
+        <!-- Defines the radius of the four corners. -->
+        <attr name="radius" format="dimension" />
+        <!-- Radius of the top left corner. -->
+        <attr name="radiusTopLeft" format="dimension" />
+        <!-- Radius of the top right corner. -->
+        <attr name="radiusTopRight" format="dimension" />
+        <!-- Radius of the bottom left corner. -->
+        <attr name="radiusBottomLeft" format="dimension" />
+        <!-- Radius of the bottom right corner. -->
+        <attr name="radiusBottomRight" format="dimension" />
+    </declare-styleable>
+
 </resources>
