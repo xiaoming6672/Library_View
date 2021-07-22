@@ -68,8 +68,8 @@ public class XMStrokeTextView extends AppCompatTextView {
             mStrokeWidth = 0;
         } else {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.XMStrokeTextView);
-            mStrokeColor = a.getColorStateList(R.styleable.XMStrokeTextView_strokeColor);
-            mStrokeWidth = a.getDimension(R.styleable.XMStrokeTextView_strokeWidth, ResUtils.dp2px(1));
+            mStrokeColor = a.hasValue(R.styleable.XMStrokeTextView_strokeColor) ? a.getColorStateList(R.styleable.XMStrokeTextView_strokeColor) : ColorStateList.valueOf(Color.TRANSPARENT);
+            mStrokeWidth = a.hasValue(R.styleable.XMStrokeTextView_strokeWidth) ? a.getDimension(R.styleable.XMStrokeTextView_strokeWidth, ResUtils.dp2px(1)) : 0;
             mOrientation = a.getInteger(R.styleable.XMStrokeTextView_gradientOrientation, HORIZONTAL);
 
             Integer startColor = null, centerColor = null, endColor = null;

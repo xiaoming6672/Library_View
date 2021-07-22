@@ -22,10 +22,10 @@
         app:gradientStart="@android:color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:strokeColor="#0000FF"
-        app:strokeWidth="4dp"
         tools:ignore="HardcodedText"
         tools:textColor="#000000" />
+    <!--    app:strokeColor="#0000FF"-->
+    <!--    app:strokeWidth="4dp"-->
 
     <com.zhang.library.view.XMHexagonImageView
         android:id="@+id/iv_hexagon"
