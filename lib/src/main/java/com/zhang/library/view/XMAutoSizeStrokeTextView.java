@@ -1,16 +1,16 @@
 package com.zhang.library.view;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.ViewTreeObserver;
 
 /**
  * 自动字号的描边文字控件
  *
  * @author ZhangXiaoMing 2021-04-25 18:26 星期日
  */
-public class XMAutoSizeStrokeTextView extends XMStrokeTextView implements ViewTreeObserver.OnGlobalLayoutListener {
+public class XMAutoSizeStrokeTextView extends XMStrokeTextView {
 
     private boolean isAutoSizeEnabled = true;
 
@@ -24,8 +24,6 @@ public class XMAutoSizeStrokeTextView extends XMStrokeTextView implements ViewTr
 
     public XMAutoSizeStrokeTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-        getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
     public void setAutoSizeEnabled(boolean autoSizeEnabled) {
@@ -37,7 +35,9 @@ public class XMAutoSizeStrokeTextView extends XMStrokeTextView implements ViewTr
     }
 
     @Override
-    public void onGlobalLayout() {
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
         if (!isAutoSizeEnabled)
             return;
 
@@ -49,4 +49,5 @@ public class XMAutoSizeStrokeTextView extends XMStrokeTextView implements ViewTr
             setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         }
     }
+
 }
