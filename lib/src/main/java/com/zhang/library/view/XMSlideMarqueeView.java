@@ -70,6 +70,13 @@ public class XMSlideMarqueeView extends RecyclerView {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        mSlideRunnable = new XMSlideRunnable(this);
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         stop();
 
@@ -94,8 +101,6 @@ public class XMSlideMarqueeView extends RecyclerView {
 
             typedArray.recycle();
         }
-
-        mSlideRunnable = new XMSlideRunnable(this);
     }
 
 
