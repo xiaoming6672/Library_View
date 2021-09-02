@@ -64,4 +64,16 @@
         app:radiusTopLeft="30dp"
         app:radiusTopRight="15dp" />
 
+    <com.zhang.library.view.XMSlideMarqueeView
+        android:id="@+id/rv_marquee"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#1A000000"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:slide_orientation="horizontal"
+        tools:listitem="@layout/item_marquee" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
