@@ -3,19 +3,15 @@ package com.zhang.library.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
+
+import java.lang.ref.WeakReference;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.zhang.library.adapter.BaseRecyclerAdapter;
-import com.zhang.library.adapter.viewholder.base.BaseRecyclerViewHolder;
-import com.zhang.library.utils.CollectionUtils;
-
-import java.lang.ref.WeakReference;
 
 /**
  * 跑马灯功能的RecyclerView
@@ -26,6 +22,7 @@ public class XMSlideMarqueeView extends RecyclerView {
 
     /** 滑动的Runnable */
     private XMSlideRunnable mSlideRunnable;
+    private AdapterWrapper mAdapterWrapper;
 
     /** 每次滚动的距离 */
     private int mScrollDistance;
@@ -36,15 +33,11 @@ public class XMSlideMarqueeView extends RecyclerView {
     private int mScrollTimeMillis;
 
     public XMSlideMarqueeView(@NonNull Context context) {
-        super(context);
-
-        init(null);
+        this(context, null);
     }
 
     public XMSlideMarqueeView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-
-        init(attrs);
+        this(context, attrs, R.attr.recyclerViewStyle);
     }
 
     public XMSlideMarqueeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -66,7 +59,14 @@ public class XMSlideMarqueeView extends RecyclerView {
 
     @Override
     public void setAdapter(@Nullable Adapter adapter) {
-        super.setAdapter(adapter);
+//        super.setAdapter(adapter);
+        getAdapterWrapper().setAdapter(adapter);
+    }
+
+    @Nullable
+    @Override
+    public Adapter getAdapter() {
+        return getAdapterWrapper().getAdapter();
     }
 
     @Override
@@ -101,26 +101,32 @@ public class XMSlideMarqueeView extends RecyclerView {
 
             typedArray.recycle();
         }
+
+        super.setAdapter(getAdapterWrapper());
     }
 
-
+    /** 获取滑动距离 */
     public int getScrollDistance() {
         return mScrollDistance;
     }
 
+    /** 设置滑动距离 */
     public void setScrollDistance(int scrollDistance) {
         this.mScrollDistance = scrollDistance;
     }
 
+    /** 获取滑动方向 */
     @Orientation
     public int getScrollOrientation() {
         return mScrollOrientation;
     }
 
+    /** 设置滑动方向 */
     public void setScrollOrientation(int scrollOrientation) {
         this.mScrollOrientation = scrollOrientation;
     }
 
+    /** 获取滚动延时 */
     public int getScrollTimeMillis() {
         return mScrollTimeMillis;
     }
@@ -129,15 +135,34 @@ public class XMSlideMarqueeView extends RecyclerView {
         this.mScrollTimeMillis = scrollTimeMillis;
     }
 
+    /** 通知适配器刷新数据 */
+    public void notifyDataSetChanged() {
+        getAdapterWrapper().notifyDataSetChanged();
+    }
+
     /** 开始滑动 */
     public void start() {
+        start(0);
+    }
+
+    /** 开始滑动 */
+    public void startDelay() {
+        start(getScrollTimeMillis());
+    }
+
+    /**
+     * 开始滑动
+     *
+     * @param delay 延时开始时间
+     */
+    public void start(long delay) {
         if (getAdapter() == null || getAdapter().getItemCount() == 0)
             return;
 
         stop();
 
         try {
-            post(mSlideRunnable);
+            postDelayed(mSlideRunnable, delay);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,8 +177,18 @@ public class XMSlideMarqueeView extends RecyclerView {
         }
     }
 
+    /** 适配器 */
+    private AdapterWrapper getAdapterWrapper() {
+        if (mAdapterWrapper == null) {
+            mAdapterWrapper = new AdapterWrapper();
+        }
+
+        return mAdapterWrapper;
+    }
+
+
     /** 滑动的Runnable */
-    static class XMSlideRunnable implements Runnable {
+    private static class XMSlideRunnable implements Runnable {
 
         private final WeakReference<XMSlideMarqueeView> mReference;
 
@@ -178,55 +213,110 @@ public class XMSlideMarqueeView extends RecyclerView {
         }
     }
 
-    /**
-     * 平滑移动的跑马灯列表的基类适配器
-     *
-     * @author ZhangXiaoMing 2021-06-23 17:15 星期三
-     */
-    public static abstract class XMSlideMarqueeAdapter<VH extends XMSlideMarqueeViewHolder<T>, T> extends BaseRecyclerAdapter<T> {
+    /** 包裹层适配器 */
+    private static class AdapterWrapper extends RecyclerView.Adapter {
+
+        private static final String TAG = AdapterWrapper.class.getSimpleName();
+
+        private RecyclerView.Adapter mAdapter;
+
+        public void setAdapter(RecyclerView.Adapter adapter) {
+            this.mAdapter = adapter;
+
+            mAdapter.registerAdapterDataObserver(new AdapterDataObserver() {
+                @Override
+                public void onChanged() {
+                    Log.i(TAG, "registerAdapterDataObserver>>>onChanged()");
+                    super.onChanged();
+
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onItemRangeChanged(int positionStart, int itemCount) {
+                    Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeChanged()");
+                    super.onItemRangeChanged(positionStart, itemCount);
+
+                    notifyItemRangeChanged(positionStart, itemCount);
+                }
+
+                @Override
+                public void onItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
+                    Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeChanged()");
+                    super.onItemRangeChanged(positionStart, itemCount, payload);
+
+                    notifyItemRangeChanged(positionStart, itemCount, payload);
+                }
+
+                @Override
+                public void onItemRangeInserted(int positionStart, int itemCount) {
+                    Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeInserted()");
+                    super.onItemRangeInserted(positionStart, itemCount);
+
+                    notifyItemRangeInserted(positionStart, itemCount);
+                }
+
+                @Override
+                public void onItemRangeRemoved(int positionStart, int itemCount) {
+                    Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeRemoved()");
+                    super.onItemRangeRemoved(positionStart, itemCount);
+
+                    notifyItemRangeRemoved(positionStart, itemCount);
+                }
+
+                @Override
+                public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+                    Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeMoved()");
+                    super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+
+                    notifyItemMoved(fromPosition, toPosition);
+                }
+
+                @Override
+                public void onStateRestorationPolicyChanged() {
+                    Log.i(TAG, "registerAdapterDataObserver>>>onStateRestorationPolicyChanged()");
+                    super.onStateRestorationPolicyChanged();
+
+                    notifyDataSetChanged();
+                }
+            });
+
+            notifyDataSetChanged();
+        }
+
+        public RecyclerView.Adapter getAdapter() {
+            return mAdapter;
+        }
+
+        /** 获取真实的位置 */
+        private int getRealPosition(int position) {
+            if (mAdapter == null || mAdapter.getItemCount() == 0)
+                return position;
+
+            int itemCount = mAdapter.getItemCount();
+            return position % itemCount;
+        }
 
         @Override
         public int getItemCount() {
-            return getDataHolder().size() == 0 ? 0 : Integer.MAX_VALUE;
+            if (mAdapter == null || mAdapter.getItemCount() == 0)
+                return 0;
+
+            int itemCount = mAdapter.getItemCount();
+            return itemCount == 1 ? 1 : Integer.MAX_VALUE;
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return mAdapter.onCreateViewHolder(parent, viewType);
         }
 
         @Override
-        public int getItemViewType(int position) {
-            return VIEW_TYPE_NORMAL_DATA;
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            mAdapter.onBindViewHolder(holder, getRealPosition(position));
         }
 
-        protected abstract VH onCreateVHolder(ViewGroup parent, int viewType);
-
-        @Override
-        protected void onBindData(BaseRecyclerViewHolder<T> viewHolder, T data, int position) {
-        }
-    }
-
-    /**
-     * 平滑移动的跑马灯的基类ViewHolder
-     *
-     * @author ZhangXiaoMing 2021-06-23 17:19 星期三
-     */
-    public static abstract class XMSlideMarqueeViewHolder<T> extends BaseRecyclerViewHolder<T> {
-
-        public XMSlideMarqueeViewHolder(@NonNull View itemView) {
-            super(itemView);
-        }
-
-        public XMSlideMarqueeViewHolder(ViewGroup parent, int layoutId) {
-            super(parent, layoutId);
-        }
-
-        @Override
-        public void onBindData(T item, int position) {
-            int size = getAdapter().getDataHolder().size();
-            int realPosition = position % size;
-
-            T itemData = CollectionUtils.get(getAdapter().getDataHolder().getDataList(), realPosition);
-            bindData(itemData, position, realPosition);
-        }
-
-        protected abstract void bindData(T item, int position, int realPosition);
     }
 
 }
