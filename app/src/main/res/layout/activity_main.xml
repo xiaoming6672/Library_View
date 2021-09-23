@@ -27,6 +27,20 @@
     <!--    app:strokeColor="#0000FF"-->
     <!--    app:strokeWidth="4dp"-->
 
+    <com.zhang.library.view.XMStrokeTextView
+        android:id="@+id/tv_stroke_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="去获取"
+        android:textColor="@color/color_text"
+        android:textSize="30sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_my_stroke"
+        app:strokeColor="@color/color_stroke"
+        app:strokeWidth="5dp"
+        tools:ignore="HardcodedText" />
+
     <com.zhang.library.view.XMHexagonImageView
         android:id="@+id/iv_hexagon"
         android:layout_width="0dp"
