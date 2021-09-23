@@ -96,8 +96,8 @@ public class XMStrokeTextView extends AppCompatTextView {
 
     @Override
     public void setLayoutParams(ViewGroup.LayoutParams params) {
-        super.setLayoutParams(params);
         mStrokeText.setLayoutParams(params);
+        super.setLayoutParams(params);
     }
 
     @Override
@@ -108,34 +108,34 @@ public class XMStrokeTextView extends AppCompatTextView {
             this.postInvalidate();
         }
 
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mStrokeText.measure(widthMeasureSpec, heightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
         mStrokeText.layout(left, top, right, bottom);
+        super.onLayout(changed, left, top, right, bottom);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
         mStrokeText.setEnabled(enabled);
+        super.setEnabled(enabled);
     }
 
     @Override
     public void setSelected(boolean selected) {
-        super.setSelected(selected);
         mStrokeText.setSelected(selected);
+        super.setSelected(selected);
     }
 
     @Override
     public void setText(CharSequence text, BufferType type) {
-        super.setText(text, type);
         if (mStrokeText != null) {
             mStrokeText.setText(text, type);
         }
+        super.setText(text, type);
     }
 
     @Override

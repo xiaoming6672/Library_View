@@ -44,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.tv_stroke_select).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setSelected(!v.isSelected());
+            }
+        });
+
         rvMarquee = findViewById(R.id.rv_marquee);
         rvMarquee.setAdapter(getMarqueeAdapter());
     }
