@@ -32,6 +32,9 @@ public class XMSlideMarqueeView extends RecyclerView {
     /** 跑马灯滑动间隔时间 */
     private int mScrollTimeMillis;
 
+    /** 正在运行 */
+    private boolean isRunning;
+
     public XMSlideMarqueeView(@NonNull Context context) {
         this(context, null);
     }
@@ -135,6 +138,10 @@ public class XMSlideMarqueeView extends RecyclerView {
         this.mScrollTimeMillis = scrollTimeMillis;
     }
 
+    public boolean isRunning() {
+        return isRunning;
+    }
+
     /** 通知适配器刷新数据 */
     public void notifyDataSetChanged() {
         getAdapterWrapper().notifyDataSetChanged();
@@ -162,6 +169,7 @@ public class XMSlideMarqueeView extends RecyclerView {
         stop();
 
         try {
+            isRunning = true;
             postDelayed(mSlideRunnable, delay);
         } catch (Exception e) {
             e.printStackTrace();
@@ -171,6 +179,7 @@ public class XMSlideMarqueeView extends RecyclerView {
     /** 结束滑动 */
     public void stop() {
         try {
+            isRunning = false;
             removeCallbacks(mSlideRunnable);
         } catch (Exception e) {
             e.printStackTrace();
@@ -201,6 +210,9 @@ public class XMSlideMarqueeView extends RecyclerView {
             XMSlideMarqueeView view = mReference.get();
 
             if (view == null)
+                return;
+
+            if (!view.isRunning())
                 return;
 
             int orientation = view.getScrollOrientation();
