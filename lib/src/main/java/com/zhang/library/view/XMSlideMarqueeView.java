@@ -233,65 +233,17 @@ public class XMSlideMarqueeView extends RecyclerView {
         private RecyclerView.Adapter mAdapter;
 
         public void setAdapter(RecyclerView.Adapter adapter) {
+            if (mAdapter == adapter)
+                return;
+
+            if (mAdapter != null)
+                mAdapter.unregisterAdapterDataObserver(mObserver);
+
             this.mAdapter = adapter;
+            if (mAdapter == null)
+                return;
 
-            mAdapter.registerAdapterDataObserver(new AdapterDataObserver() {
-                @Override
-                public void onChanged() {
-                    Log.i(TAG, "registerAdapterDataObserver>>>onChanged()");
-                    super.onChanged();
-
-                    notifyDataSetChanged();
-                }
-
-                @Override
-                public void onItemRangeChanged(int positionStart, int itemCount) {
-                    Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeChanged()");
-                    super.onItemRangeChanged(positionStart, itemCount);
-
-                    notifyItemRangeChanged(positionStart, itemCount);
-                }
-
-                @Override
-                public void onItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
-                    Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeChanged()");
-                    super.onItemRangeChanged(positionStart, itemCount, payload);
-
-                    notifyItemRangeChanged(positionStart, itemCount, payload);
-                }
-
-                @Override
-                public void onItemRangeInserted(int positionStart, int itemCount) {
-                    Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeInserted()");
-                    super.onItemRangeInserted(positionStart, itemCount);
-
-                    notifyItemRangeInserted(positionStart, itemCount);
-                }
-
-                @Override
-                public void onItemRangeRemoved(int positionStart, int itemCount) {
-                    Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeRemoved()");
-                    super.onItemRangeRemoved(positionStart, itemCount);
-
-                    notifyItemRangeRemoved(positionStart, itemCount);
-                }
-
-                @Override
-                public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-                    Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeMoved()");
-                    super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-
-                    notifyItemMoved(fromPosition, toPosition);
-                }
-
-                @Override
-                public void onStateRestorationPolicyChanged() {
-                    Log.i(TAG, "registerAdapterDataObserver>>>onStateRestorationPolicyChanged()");
-                    super.onStateRestorationPolicyChanged();
-
-                    notifyDataSetChanged();
-                }
-            });
+            mAdapter.registerAdapterDataObserver(mObserver);
 
             notifyDataSetChanged();
         }
@@ -328,6 +280,64 @@ public class XMSlideMarqueeView extends RecyclerView {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             mAdapter.onBindViewHolder(holder, getRealPosition(position));
         }
+
+        private final AdapterDataObserver mObserver = new AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                Log.i(TAG, "registerAdapterDataObserver>>>onChanged()");
+                super.onChanged();
+
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeChanged()");
+                super.onItemRangeChanged(positionStart, itemCount);
+
+                notifyItemRangeChanged(positionStart, itemCount);
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
+                Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeChanged()");
+                super.onItemRangeChanged(positionStart, itemCount, payload);
+
+                notifyItemRangeChanged(positionStart, itemCount, payload);
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeInserted()");
+                super.onItemRangeInserted(positionStart, itemCount);
+
+                notifyItemRangeInserted(positionStart, itemCount);
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeRemoved()");
+                super.onItemRangeRemoved(positionStart, itemCount);
+
+                notifyItemRangeRemoved(positionStart, itemCount);
+            }
+
+            @Override
+            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+                Log.i(TAG, "registerAdapterDataObserver>>>onItemRangeMoved()");
+                super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+
+                notifyItemMoved(fromPosition, toPosition);
+            }
+
+            @Override
+            public void onStateRestorationPolicyChanged() {
+                Log.i(TAG, "registerAdapterDataObserver>>>onStateRestorationPolicyChanged()");
+                super.onStateRestorationPolicyChanged();
+
+                notifyDataSetChanged();
+            }
+        };
 
     }
 
