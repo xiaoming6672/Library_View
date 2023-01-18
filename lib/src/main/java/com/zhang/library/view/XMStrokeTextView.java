@@ -5,8 +5,6 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -34,7 +32,7 @@ public class XMStrokeTextView extends AppCompatTextView {
 
     @IntDef({HORIZONTAL, VERTICAL})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface Orientation {
+    private @interface Orientation {
     }
 
     private final TextView mStrokeText;///用于描边的TextView
@@ -42,8 +40,6 @@ public class XMStrokeTextView extends AppCompatTextView {
     private float mStrokeWidth;
     private ColorStateList mStrokeColor;
 
-    private int mOrientation = HORIZONTAL;
-    private int[] mGradientColor;
 
     public XMStrokeTextView(Context context) {
         this(context, null);
@@ -70,33 +66,16 @@ public class XMStrokeTextView extends AppCompatTextView {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.XMStrokeTextView);
             mStrokeColor = a.hasValue(R.styleable.XMStrokeTextView_strokeColor) ? a.getColorStateList(R.styleable.XMStrokeTextView_strokeColor) : ColorStateList.valueOf(Color.TRANSPARENT);
             mStrokeWidth = a.hasValue(R.styleable.XMStrokeTextView_strokeWidth) ? a.getDimension(R.styleable.XMStrokeTextView_strokeWidth, ResUtils.dp2px(1)) : 0;
-            mOrientation = a.getInteger(R.styleable.XMStrokeTextView_gradientOrientation, HORIZONTAL);
-
-            Integer startColor = null, centerColor = null, endColor = null;
-            if (a.hasValue(R.styleable.XMStrokeTextView_gradientStart))
-                startColor = a.getColor(R.styleable.XMStrokeTextView_gradientStart, getCurrentTextColor());
-
-            if (a.hasValue(R.styleable.XMStrokeTextView_gradientCenter))
-                centerColor = a.getColor(R.styleable.XMStrokeTextView_gradientCenter, getCurrentTextColor());
-
-            if (a.hasValue(R.styleable.XMStrokeTextView_gradientEnd))
-                endColor = a.getColor(R.styleable.XMStrokeTextView_gradientEnd, getCurrentTextColor());
 
             a.recycle();
-
-            if (startColor != null && endColor != null) {
-                if (centerColor != null)
-                    mGradientColor = new int[]{startColor, centerColor, endColor};
-                else
-                    mGradientColor = new int[]{startColor, endColor};
-            }
-
         }
     }
 
     @Override
     public void setLayoutParams(ViewGroup.LayoutParams params) {
-        mStrokeText.setLayoutParams(params);
+        if (mStrokeText != null)
+            mStrokeText.setLayoutParams(params);
+
         super.setLayoutParams(params);
     }
 
@@ -114,27 +93,33 @@ public class XMStrokeTextView extends AppCompatTextView {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        mStrokeText.layout(left, top, right, bottom);
+        if (mStrokeText != null)
+            mStrokeText.layout(left, top, right, bottom);
+
         super.onLayout(changed, left, top, right, bottom);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        mStrokeText.setEnabled(enabled);
+        if (mStrokeText != null)
+            mStrokeText.setEnabled(enabled);
+
         super.setEnabled(enabled);
     }
 
     @Override
     public void setSelected(boolean selected) {
-        mStrokeText.setSelected(selected);
+        if (mStrokeText != null)
+            mStrokeText.setSelected(selected);
+
         super.setSelected(selected);
     }
 
     @Override
     public void setText(CharSequence text, BufferType type) {
-        if (mStrokeText != null) {
+        if (mStrokeText != null)
             mStrokeText.setText(text, type);
-        }
+
         super.setText(text, type);
     }
 
@@ -144,25 +129,10 @@ public class XMStrokeTextView extends AppCompatTextView {
         mStrokeText.setTextSize(TypedValue.COMPLEX_UNIT_PX, getTextSize());
         TextPaint strokePaint = mStrokeText.getPaint();
         strokePaint.setStrokeWidth(mStrokeWidth);
-        strokePaint.setStyle(TextPaint.Style.FILL_AND_STROKE);
+        strokePaint.setStyle(TextPaint.Style.STROKE);
         mStrokeText.draw(canvas);
 
-        if (mGradientColor != null) {
-            TextPaint paint = getPaint();
-            paint.setShader(getGradient());
-        }
         super.onDraw(canvas);
-    }
-
-    private LinearGradient getGradient() {
-        LinearGradient gradient;
-        if (mOrientation == VERTICAL) {
-            gradient = new LinearGradient(0, 0, 0, getHeight(), mGradientColor, null, Shader.TileMode.CLAMP);
-        } else {
-            gradient = new LinearGradient(0, 0, getWidth(), 0, mGradientColor, null, Shader.TileMode.CLAMP);
-        }
-
-        return gradient;
     }
 
     /** 设置描边颜色 */
@@ -177,36 +147,5 @@ public class XMStrokeTextView extends AppCompatTextView {
         invalidate();
     }
 
-    /**
-     * 设置颜色渐变方向
-     *
-     * @param orientation 渐变方向
-     */
-    public void setGradientOrientation(@Orientation int orientation) {
-        this.mOrientation = orientation;
-        invalidate();
-    }
 
-    /**
-     * 设置渐变颜色
-     *
-     * @param startColor 起始颜色
-     * @param endColor   结束颜色
-     */
-    public void setGradientColor(int startColor, int endColor) {
-        mGradientColor = new int[]{startColor, endColor};
-        invalidate();
-    }
-
-    /**
-     * 设置渐变颜色
-     *
-     * @param startColor  起始颜色
-     * @param centerColor 中间颜色
-     * @param endColor    结束颜色
-     */
-    public void setGradientColor(int startColor, int centerColor, int endColor) {
-        mGradientColor = new int[]{startColor, centerColor, endColor};
-        invalidate();
-    }
 }

@@ -52,6 +52,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.tv_stroke_select).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                View view = findViewById(R.id.tv_stroke_enable);
+                view.setEnabled(!view.isEnabled());
+                return true;
+
+            }
+        });
+
         rvMarquee = findViewById(R.id.rv_marquee);
         rvMarquee.setAdapter(getMarqueeAdapter());
         rvMarquee.setTouchSupported(true);
