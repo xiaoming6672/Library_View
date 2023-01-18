@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
-import java.lang.ref.WeakReference;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,10 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
  *
  * @author ZhangXiaoMing 2021-06-23 17:01 星期三
  */
-public class XMSlideMarqueeView extends RecyclerView {
+public class XMSlideMarqueeView extends RecyclerView implements Runnable {
 
-    /** 滑动的Runnable */
-    private XMSlideRunnable mSlideRunnable;
     private AdapterWrapper mAdapterWrapper;
 
     /** 每次滚动的距离 */
@@ -32,6 +28,8 @@ public class XMSlideMarqueeView extends RecyclerView {
     /** 跑马灯滑动间隔时间 */
     private int mScrollTimeMillis;
 
+    /** 是否支持滑动 */
+    private boolean isTouchSupported;
     /** 正在运行 */
     private boolean isRunning;
 
@@ -56,6 +54,9 @@ public class XMSlideMarqueeView extends RecyclerView {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
+        if (isTouchSupported)
+            return super.onTouchEvent(e);
+
         performClick();
         return true;
     }
@@ -73,19 +74,8 @@ public class XMSlideMarqueeView extends RecyclerView {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        mSlideRunnable = new XMSlideRunnable(this);
-    }
-
-    @Override
     protected void onDetachedFromWindow() {
         stop();
-
-        if (mSlideRunnable != null) {
-            mSlideRunnable = null;
-        }
 
         super.onDetachedFromWindow();
     }
@@ -99,7 +89,7 @@ public class XMSlideMarqueeView extends RecyclerView {
             TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.XMSlideMarqueeView);
 
             mScrollDistance = typedArray.getInteger(R.styleable.XMSlideMarqueeView_slide_distance, 1);
-            mScrollOrientation = typedArray.getInt(R.styleable.XMSlideMarqueeView_slide_orientation, 0);
+            mScrollOrientation = typedArray.getInt(R.styleable.XMSlideMarqueeView_slide_orientation, HORIZONTAL);
             mScrollTimeMillis = typedArray.getInteger(R.styleable.XMSlideMarqueeView_slide_timemillis, 10);
 
             typedArray.recycle();
@@ -125,7 +115,7 @@ public class XMSlideMarqueeView extends RecyclerView {
     }
 
     /** 设置滑动方向 */
-    public void setScrollOrientation(int scrollOrientation) {
+    public void setScrollOrientation(@Orientation int scrollOrientation) {
         this.mScrollOrientation = scrollOrientation;
     }
 
@@ -136,6 +126,20 @@ public class XMSlideMarqueeView extends RecyclerView {
 
     public void setScrollTimeMillis(int scrollTimeMillis) {
         this.mScrollTimeMillis = scrollTimeMillis;
+    }
+
+    public boolean isTouchSupported() {
+        return isTouchSupported;
+    }
+
+    /**
+     * 设置是否支持滑动
+     *
+     * @param touchSupported <b>true:</b>不阻塞Touch事件，允许滑动
+     *                       <br><b>false:</b>阻塞Touch事件，不允许滑动
+     */
+    public void setTouchSupported(boolean touchSupported) {
+        isTouchSupported = touchSupported;
     }
 
     public boolean isRunning() {
@@ -170,7 +174,7 @@ public class XMSlideMarqueeView extends RecyclerView {
 
         try {
             isRunning = true;
-            postDelayed(mSlideRunnable, delay);
+            postDelayed(this, delay);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -180,7 +184,7 @@ public class XMSlideMarqueeView extends RecyclerView {
     public void stop() {
         try {
             isRunning = false;
-            removeCallbacks(mSlideRunnable);
+            removeCallbacks(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -195,35 +199,20 @@ public class XMSlideMarqueeView extends RecyclerView {
         return mAdapterWrapper;
     }
 
+    @Override
+    public void run() {
+        if (!isRunning())
+            return;
 
-    /** 滑动的Runnable */
-    private static class XMSlideRunnable implements Runnable {
+        int orientation = getScrollOrientation();
+        if (orientation == HORIZONTAL)
+            scrollBy(getScrollDistance(), 0);
+        else
+            scrollBy(0, getScrollDistance());
 
-        private final WeakReference<XMSlideMarqueeView> mReference;
-
-        public XMSlideRunnable(XMSlideMarqueeView slideMarqueeView) {
-            this.mReference = new WeakReference<>(slideMarqueeView);
-        }
-
-        @Override
-        public void run() {
-            XMSlideMarqueeView view = mReference.get();
-
-            if (view == null)
-                return;
-
-            if (!view.isRunning())
-                return;
-
-            int orientation = view.getScrollOrientation();
-            if (orientation == HORIZONTAL)
-                view.scrollBy(view.getScrollDistance(), 0);
-            else
-                view.scrollBy(0, view.getScrollDistance());
-
-            view.postDelayed(this, view.getScrollTimeMillis());
-        }
+        postDelayed(this, getScrollTimeMillis());
     }
+
 
     /** 包裹层适配器 */
     private static class AdapterWrapper extends RecyclerView.Adapter {

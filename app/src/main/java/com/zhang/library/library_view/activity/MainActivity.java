@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         rvMarquee = findViewById(R.id.rv_marquee);
         rvMarquee.setAdapter(getMarqueeAdapter());
+        rvMarquee.setTouchSupported(true);
 
         final XMAutoSizeTextView tvAutoSize = findViewById(R.id.tv_auto_size);
         tvAutoSize.setText("奥迪虎丘我弄按时都会去外地阿是第几阿朵我hi去黄");
