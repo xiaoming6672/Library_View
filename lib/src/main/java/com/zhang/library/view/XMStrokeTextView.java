@@ -141,11 +141,23 @@ public class XMStrokeTextView extends AppCompatTextView {
         invalidate();
     }
 
+    /** 获取描边颜色 */
+    public ColorStateList getStrokeColor() {
+        return mStrokeColor;
+    }
+
     /** 设置描边宽度，单位：px */
     public void setStrokeWidth(float width) {
         mStrokeWidth = width;
         invalidate();
     }
 
+    /** 获取描边宽度，单位：px */
+    public float getStrokeWidth() {
+        return mStrokeWidth;
+    }
 
+    protected TextView getStrokeText() {
+        return mStrokeText;
+    }
 }
