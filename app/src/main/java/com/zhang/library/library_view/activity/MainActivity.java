@@ -9,6 +9,7 @@ import com.zhang.library.library_view.R;
 import com.zhang.library.library_view.adapter.MarqueeAdapter;
 import com.zhang.library.utils.LogUtils;
 import com.zhang.library.utils.context.ContextUtils;
+import com.zhang.library.view.XMAutoSizeTextView;
 import com.zhang.library.view.XMSlideMarqueeView;
 
 import java.util.ArrayList;
@@ -53,6 +54,16 @@ public class MainActivity extends AppCompatActivity {
 
         rvMarquee = findViewById(R.id.rv_marquee);
         rvMarquee.setAdapter(getMarqueeAdapter());
+
+        final XMAutoSizeTextView tvAutoSize = findViewById(R.id.tv_auto_size);
+        tvAutoSize.setText("奥迪虎丘我弄按时都会去外地阿是第几阿朵我hi去黄");
+        tvAutoSize.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvAutoSize.setText("哀思和阿");
+//                tvAutoSize.setText("哀思和阿搜下昂实行按照西欧啊那矿务局付水泥厂饭局");
+            }
+        });
     }
 
     private void initData() {

@@ -34,4 +34,9 @@
         <attr name="radiusBottomRight" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="XMAutoSizeTextView">
+        <attr name="autoSizeEnable" format="boolean" />
+        <attr name="autoSizeMaxLine" format="integer" />
+    </declare-styleable>
+
 </resources>
