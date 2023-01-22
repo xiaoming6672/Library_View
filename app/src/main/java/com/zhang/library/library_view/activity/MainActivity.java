@@ -1,7 +1,12 @@
 package com.zhang.library.library_view.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zhang.library.library_view.BuildConfig;
@@ -59,6 +64,22 @@ public class MainActivity extends AppCompatActivity {
                 view.setEnabled(!view.isEnabled());
                 return true;
 
+            }
+        });
+
+        findViewById(R.id.tv_stroke_enable).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                String text = "<font color='#FF0000'>Html</font>测试";
+//                ((TextView) findViewById(R.id.tv_stroke_enable)).setText(Html.fromHtml(text));
+
+                SpannableString span = new SpannableString("Spannable");
+                span.setSpan(new ForegroundColorSpan(Color.BLUE), 0, span.length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+                SpannableStringBuilder builder = new SpannableStringBuilder();
+                builder.append(span).append("测试");
+                ((TextView) findViewById(R.id.tv_stroke_enable)).setText(span);
+
+//                ((TextView) findViewById(R.id.tv_stroke_enable)).setText("builder");
             }
         });
 
