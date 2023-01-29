@@ -3,6 +3,9 @@
     <declare-styleable name="XMStrokeTextView">
         <attr name="strokeColor" format="color" />
         <attr name="strokeWidth" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="XMGradientTextView">
         <attr name="gradientOrientation" format="enum">
             <enum name="horizontal" value="0" />
             <enum name="vertical" value="1" />
@@ -32,6 +35,11 @@
         <attr name="radiusBottomLeft" format="dimension" />
         <!-- Radius of the bottom right corner. -->
         <attr name="radiusBottomRight" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="XMAutoSizeTextView">
+        <attr name="autoSizeEnable" format="boolean" />
+        <attr name="autoSizeMaxLine" format="integer" />
     </declare-styleable>
 
 </resources>

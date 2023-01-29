@@ -5,8 +5,9 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -20,6 +21,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
 /**
@@ -34,16 +36,15 @@ public class XMStrokeTextView extends AppCompatTextView {
 
     @IntDef({HORIZONTAL, VERTICAL})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface Orientation {
+    private @interface Orientation {
     }
 
-    private final TextView mStrokeText;///用于描边的TextView
+    /** 用于描边的TextView */
+    private final TextView mStrokeTextView;
 
     private float mStrokeWidth;
     private ColorStateList mStrokeColor;
 
-    private int mOrientation = HORIZONTAL;
-    private int[] mGradientColor;
 
     public XMStrokeTextView(Context context) {
         this(context, null);
@@ -56,10 +57,10 @@ public class XMStrokeTextView extends AppCompatTextView {
     public XMStrokeTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        mStrokeText = new TextView(context, attrs, defStyleAttr);
-        mStrokeText.setGravity(getGravity());
-
         init(attrs);
+
+        mStrokeTextView = new TextView(context, attrs, defStyleAttr);
+        initStrokeTextView();
     }
 
     private void init(AttributeSet attrs) {
@@ -70,99 +71,160 @@ public class XMStrokeTextView extends AppCompatTextView {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.XMStrokeTextView);
             mStrokeColor = a.hasValue(R.styleable.XMStrokeTextView_strokeColor) ? a.getColorStateList(R.styleable.XMStrokeTextView_strokeColor) : ColorStateList.valueOf(Color.TRANSPARENT);
             mStrokeWidth = a.hasValue(R.styleable.XMStrokeTextView_strokeWidth) ? a.getDimension(R.styleable.XMStrokeTextView_strokeWidth, ResUtils.dp2px(1)) : 0;
-            mOrientation = a.getInteger(R.styleable.XMStrokeTextView_gradientOrientation, HORIZONTAL);
-
-            Integer startColor = null, centerColor = null, endColor = null;
-            if (a.hasValue(R.styleable.XMStrokeTextView_gradientStart))
-                startColor = a.getColor(R.styleable.XMStrokeTextView_gradientStart, getCurrentTextColor());
-
-            if (a.hasValue(R.styleable.XMStrokeTextView_gradientCenter))
-                centerColor = a.getColor(R.styleable.XMStrokeTextView_gradientCenter, getCurrentTextColor());
-
-            if (a.hasValue(R.styleable.XMStrokeTextView_gradientEnd))
-                endColor = a.getColor(R.styleable.XMStrokeTextView_gradientEnd, getCurrentTextColor());
 
             a.recycle();
-
-            if (startColor != null && endColor != null) {
-                if (centerColor != null)
-                    mGradientColor = new int[]{startColor, centerColor, endColor};
-                else
-                    mGradientColor = new int[]{startColor, endColor};
-            }
-
         }
+    }
+
+    private void initStrokeTextView() {
+        mStrokeTextView.setCompoundDrawablePadding(getCompoundDrawablePadding());
+
+        Drawable[] drawables = getCompoundDrawablesRelative();
+        if (drawables != null && drawables.length > 0)
+            mStrokeTextView.setCompoundDrawables(drawables[0], drawables[1], drawables[2], drawables[3]);
+
+        mStrokeTextView.setTextColor(mStrokeColor);
+        mStrokeTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getTextSize());
+        TextPaint strokePaint = mStrokeTextView.getPaint();
+        strokePaint.setStrokeWidth(mStrokeWidth);
+        strokePaint.setStyle(TextPaint.Style.STROKE);
+    }
+
+    @Override
+    public void setTypeface(@Nullable Typeface tf) {
+        if (mStrokeTextView != null)
+            mStrokeTextView.setTypeface(tf);
+
+        super.setTypeface(tf);
+    }
+
+    @Override
+    public void setTypeface(@Nullable Typeface tf, int style) {
+        if (mStrokeTextView != null)
+            mStrokeTextView.setTypeface(tf, style);
+
+        super.setTypeface(tf, style);
+    }
+
+    @Override
+    public void setGravity(int gravity) {
+        if (mStrokeTextView != null)
+            mStrokeTextView.setGravity(gravity);
+
+        super.setGravity(gravity);
     }
 
     @Override
     public void setLayoutParams(ViewGroup.LayoutParams params) {
-        mStrokeText.setLayoutParams(params);
+        if (mStrokeTextView != null)
+            mStrokeTextView.setLayoutParams(params);
+
         super.setLayoutParams(params);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        CharSequence text = mStrokeText.getText();
+        CharSequence text = mStrokeTextView.getText();
         if (TextUtils.isEmpty(text) || !text.equals(getText())) {
-            mStrokeText.setText(getText());
+            mStrokeTextView.setText(getText());
             this.postInvalidate();
         }
 
-        mStrokeText.measure(widthMeasureSpec, heightMeasureSpec);
+        mStrokeTextView.measure(widthMeasureSpec, heightMeasureSpec);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        mStrokeText.layout(left, top, right, bottom);
+        if (mStrokeTextView != null)
+            mStrokeTextView.layout(left, top, right, bottom);
+
         super.onLayout(changed, left, top, right, bottom);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        mStrokeText.setEnabled(enabled);
+        if (mStrokeTextView != null)
+            mStrokeTextView.setEnabled(enabled);
+
         super.setEnabled(enabled);
     }
 
     @Override
     public void setSelected(boolean selected) {
-        mStrokeText.setSelected(selected);
+        if (mStrokeTextView != null)
+            mStrokeTextView.setSelected(selected);
+
         super.setSelected(selected);
     }
 
     @Override
+    public void setTextSize(float size) {
+        if (mStrokeTextView != null)
+            mStrokeTextView.setTextSize(size);
+
+        super.setTextSize(size);
+    }
+
+    @Override
+    public void setTextSize(int unit, float size) {
+        if (mStrokeTextView != null)
+            mStrokeTextView.setTextSize(unit, size);
+
+        super.setTextSize(unit, size);
+    }
+
+    @Override
     public void setText(CharSequence text, BufferType type) {
-        if (mStrokeText != null) {
-            mStrokeText.setText(text, type);
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        if (!TextUtils.isEmpty(text)) {
+            String space = " ";
+            String s = text.toString();
+
+            if (!s.startsWith(space))
+                builder.append(space);
+
+            builder.append(text);
+
+            if (!s.endsWith(space))
+                builder.append(space);
         }
-        super.setText(text, type);
+
+        if (mStrokeTextView != null)
+            mStrokeTextView.setText(builder.toString());
+
+        super.setText(builder, type);
+    }
+
+    @Override
+    public void setCompoundDrawablePadding(int pad) {
+        if (mStrokeTextView != null)
+            mStrokeTextView.setCompoundDrawablePadding(pad);
+
+        super.setCompoundDrawablePadding(pad);
+    }
+
+    @Override
+    public void setCompoundDrawables(@Nullable Drawable left, @Nullable Drawable top, @Nullable Drawable right, @Nullable Drawable bottom) {
+        if (mStrokeTextView != null)
+            mStrokeTextView.setCompoundDrawables(left, top, right, bottom);
+
+        super.setCompoundDrawables(left, top, right, bottom);
+    }
+
+    @Override
+    public void setCompoundDrawablesRelative(@Nullable Drawable start, @Nullable Drawable top, @Nullable Drawable end, @Nullable Drawable bottom) {
+        if (mStrokeTextView != null)
+            mStrokeTextView.setCompoundDrawablesRelative(start, top, end, bottom);
+
+        super.setCompoundDrawablesRelative(start, top, end, bottom);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        mStrokeText.setTextColor(mStrokeColor);
-        mStrokeText.setTextSize(TypedValue.COMPLEX_UNIT_PX, getTextSize());
-        TextPaint strokePaint = mStrokeText.getPaint();
-        strokePaint.setStrokeWidth(mStrokeWidth);
-        strokePaint.setStyle(TextPaint.Style.FILL_AND_STROKE);
-        mStrokeText.draw(canvas);
+        mStrokeTextView.draw(canvas);
 
-        if (mGradientColor != null) {
-            TextPaint paint = getPaint();
-            paint.setShader(getGradient());
-        }
         super.onDraw(canvas);
-    }
-
-    private LinearGradient getGradient() {
-        LinearGradient gradient;
-        if (mOrientation == VERTICAL) {
-            gradient = new LinearGradient(0, 0, 0, getHeight(), mGradientColor, null, Shader.TileMode.CLAMP);
-        } else {
-            gradient = new LinearGradient(0, 0, getWidth(), 0, mGradientColor, null, Shader.TileMode.CLAMP);
-        }
-
-        return gradient;
     }
 
     /** 设置描边颜色 */
@@ -171,42 +233,23 @@ public class XMStrokeTextView extends AppCompatTextView {
         invalidate();
     }
 
+    /** 获取描边颜色 */
+    public ColorStateList getStrokeColor() {
+        return mStrokeColor;
+    }
+
     /** 设置描边宽度，单位：px */
     public void setStrokeWidth(float width) {
         mStrokeWidth = width;
         invalidate();
     }
 
-    /**
-     * 设置颜色渐变方向
-     *
-     * @param orientation 渐变方向
-     */
-    public void setGradientOrientation(@Orientation int orientation) {
-        this.mOrientation = orientation;
-        invalidate();
+    /** 获取描边宽度，单位：px */
+    public float getStrokeWidth() {
+        return mStrokeWidth;
     }
 
-    /**
-     * 设置渐变颜色
-     *
-     * @param startColor 起始颜色
-     * @param endColor   结束颜色
-     */
-    public void setGradientColor(int startColor, int endColor) {
-        mGradientColor = new int[]{startColor, endColor};
-        invalidate();
-    }
-
-    /**
-     * 设置渐变颜色
-     *
-     * @param startColor  起始颜色
-     * @param centerColor 中间颜色
-     * @param endColor    结束颜色
-     */
-    public void setGradientColor(int startColor, int centerColor, int endColor) {
-        mGradientColor = new int[]{startColor, centerColor, endColor};
-        invalidate();
+    protected TextView getStrokeTextView() {
+        return mStrokeTextView;
     }
 }
