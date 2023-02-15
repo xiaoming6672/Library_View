@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class XMSlideMarqueeView extends RecyclerView implements Runnable {
 
-    private AdapterWrapper mAdapterWrapper;
+    private AdapterWrapper<?> mAdapterWrapper;
 
     /** 每次滚动的距离 */
     private int mScrollDistance;
@@ -191,9 +191,9 @@ public class XMSlideMarqueeView extends RecyclerView implements Runnable {
     }
 
     /** 适配器 */
-    private AdapterWrapper getAdapterWrapper() {
+    private AdapterWrapper<?> getAdapterWrapper() {
         if (mAdapterWrapper == null) {
-            mAdapterWrapper = new AdapterWrapper();
+            mAdapterWrapper = new AdapterWrapper<>();
         }
 
         return mAdapterWrapper;
@@ -215,13 +215,13 @@ public class XMSlideMarqueeView extends RecyclerView implements Runnable {
 
 
     /** 包裹层适配器 */
-    private static class AdapterWrapper extends RecyclerView.Adapter {
+    private static class AdapterWrapper<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
         private static final String TAG = AdapterWrapper.class.getSimpleName();
 
-        private RecyclerView.Adapter mAdapter;
+        private RecyclerView.Adapter<VH> mAdapter;
 
-        public void setAdapter(RecyclerView.Adapter adapter) {
+        public void setAdapter(RecyclerView.Adapter<VH> adapter) {
             if (mAdapter == adapter)
                 return;
 
@@ -237,7 +237,7 @@ public class XMSlideMarqueeView extends RecyclerView implements Runnable {
             notifyDataSetChanged();
         }
 
-        public RecyclerView.Adapter getAdapter() {
+        public RecyclerView.Adapter<VH> getAdapter() {
             return mAdapter;
         }
 
@@ -251,6 +251,11 @@ public class XMSlideMarqueeView extends RecyclerView implements Runnable {
         }
 
         @Override
+        public int getItemViewType(int position) {
+            return mAdapter.getItemViewType(getRealPosition(position));
+        }
+
+        @Override
         public int getItemCount() {
             if (mAdapter == null || mAdapter.getItemCount() == 0)
                 return 0;
@@ -261,13 +266,45 @@ public class XMSlideMarqueeView extends RecyclerView implements Runnable {
 
         @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return mAdapter.onCreateViewHolder(parent, viewType);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull VH holder, int position) {
             mAdapter.onBindViewHolder(holder, getRealPosition(position));
+        }
+
+        @Override
+        public void onViewAttachedToWindow(@NonNull VH holder) {
+            super.onViewAttachedToWindow(holder);
+
+            if (mAdapter != null)
+                mAdapter.onViewAttachedToWindow(holder);
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(@NonNull VH holder) {
+            super.onViewDetachedFromWindow(holder);
+
+            if (mAdapter != null)
+                mAdapter.onViewDetachedFromWindow(holder);
+        }
+
+        @Override
+        public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+
+            if (mAdapter != null)
+                mAdapter.onAttachedToRecyclerView(recyclerView);
+        }
+
+        @Override
+        public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+            super.onDetachedFromRecyclerView(recyclerView);
+
+            if (mAdapter != null)
+                mAdapter.onDetachedFromRecyclerView(recyclerView);
         }
 
         private final AdapterDataObserver mObserver = new AdapterDataObserver() {
