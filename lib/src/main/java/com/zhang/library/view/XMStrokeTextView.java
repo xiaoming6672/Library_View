@@ -45,6 +45,8 @@ public class XMStrokeTextView extends AppCompatTextView {
     private float mStrokeWidth;
     private ColorStateList mStrokeColor;
 
+    private boolean autoFitSpace;
+
 
     public XMStrokeTextView(Context context) {
         this(context, null);
@@ -67,10 +69,12 @@ public class XMStrokeTextView extends AppCompatTextView {
         if (attrs == null) {
             mStrokeColor = ColorStateList.valueOf(Color.TRANSPARENT);
             mStrokeWidth = 0;
+            autoFitSpace = true;
         } else {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.XMStrokeTextView);
             mStrokeColor = a.hasValue(R.styleable.XMStrokeTextView_strokeColor) ? a.getColorStateList(R.styleable.XMStrokeTextView_strokeColor) : ColorStateList.valueOf(Color.TRANSPARENT);
             mStrokeWidth = a.hasValue(R.styleable.XMStrokeTextView_strokeWidth) ? a.getDimension(R.styleable.XMStrokeTextView_strokeWidth, ResUtils.dp2px(1)) : 0;
+            autoFitSpace = a.getBoolean(R.styleable.XMStrokeTextView_autoFitSpace, true);
 
             a.recycle();
         }
@@ -176,6 +180,12 @@ public class XMStrokeTextView extends AppCompatTextView {
 
     @Override
     public void setText(CharSequence text, BufferType type) {
+        if (!autoFitSpace) {
+            mStrokeTextView.setText(text.toString(), type);
+            super.setText(text, type);
+            return;
+        }
+
         SpannableStringBuilder builder = new SpannableStringBuilder();
         if (!TextUtils.isEmpty(text)) {
             String space = " ";
@@ -191,7 +201,7 @@ public class XMStrokeTextView extends AppCompatTextView {
         }
 
         if (mStrokeTextView != null)
-            mStrokeTextView.setText(builder.toString());
+            mStrokeTextView.setText(builder.toString(), type);
 
         super.setText(builder, type);
     }
@@ -247,6 +257,16 @@ public class XMStrokeTextView extends AppCompatTextView {
     /** 获取描边宽度，单位：px */
     public float getStrokeWidth() {
         return mStrokeWidth;
+    }
+
+    /** 是否自动填充空格适配 */
+    public boolean isAutoFitSpace() {
+        return autoFitSpace;
+    }
+
+    /** 设置是否自动填充空格适配 */
+    public void setAutoFitSpace(boolean autoFitSpace) {
+        this.autoFitSpace = autoFitSpace;
     }
 
     protected TextView getStrokeTextView() {
