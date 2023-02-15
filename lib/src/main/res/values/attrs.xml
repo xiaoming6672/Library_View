@@ -3,6 +3,7 @@
     <declare-styleable name="XMStrokeTextView">
         <attr name="strokeColor" format="color" />
         <attr name="strokeWidth" format="dimension" />
+        <attr name="autoFitSpace" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="XMGradientTextView">
