@@ -20,6 +20,7 @@ public class XMSlideMarqueeView extends RecyclerView implements Runnable {
 
     private AdapterWrapper<?> mAdapterWrapper;
 
+
     /** 每次滚动的距离 */
     private int mScrollDistance;
     /** 跑马灯滚动方向 */
