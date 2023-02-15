@@ -181,7 +181,7 @@ public class XMStrokeTextView extends AppCompatTextView {
     @Override
     public void setText(CharSequence text, BufferType type) {
         if (!autoFitSpace) {
-            mStrokeTextView.setText(text.toString(), type);
+            mStrokeTextView.setText(text.toString());
             super.setText(text, type);
             return;
         }
@@ -201,7 +201,7 @@ public class XMStrokeTextView extends AppCompatTextView {
         }
 
         if (mStrokeTextView != null)
-            mStrokeTextView.setText(builder.toString(), type);
+            mStrokeTextView.setText(builder.toString());
 
         super.setText(builder, type);
     }
