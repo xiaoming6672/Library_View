@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.zhang.library.utils.context.ResUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
@@ -233,6 +234,12 @@ public class XMStrokeTextView extends AppCompatTextView {
     /** 设置描边颜色 */
     public void setStrokeColor(int color) {
         mStrokeColor = ColorStateList.valueOf(color);
+        invalidate();
+    }
+
+    /** 设置描边颜色 */
+    public void setStrokeColor(@NonNull ColorStateList color) {
+        mStrokeColor = color;
         invalidate();
     }
 
