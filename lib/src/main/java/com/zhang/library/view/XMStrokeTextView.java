@@ -17,10 +17,6 @@ import android.widget.TextView;
 
 import com.zhang.library.utils.context.ResUtils;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
@@ -31,21 +27,16 @@ import androidx.appcompat.widget.AppCompatTextView;
  */
 public class XMStrokeTextView extends AppCompatTextView {
 
-    public static final int HORIZONTAL = 0;
-    public static final int VERTICAL = 1;
-
-    @IntDef({HORIZONTAL, VERTICAL})
-    @Retention(RetentionPolicy.SOURCE)
-    private @interface Orientation {
-    }
-
     /** 用于描边的TextView */
     private final TextView mStrokeTextView;
 
+    /** 描边宽度 */
     private float mStrokeWidth;
+    /** 描边颜色 */
     private ColorStateList mStrokeColor;
 
-    private boolean autoFitSpace;
+    /** 是否自动填充空格适应左右两边 */
+    private boolean autoFitSpace = true;
 
 
     public XMStrokeTextView(Context context) {
