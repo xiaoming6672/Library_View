@@ -234,13 +234,13 @@ public class XMStrokeTextView extends AppCompatTextView {
     /** 设置描边颜色 */
     public void setStrokeColor(int color) {
         mStrokeColor = ColorStateList.valueOf(color);
-        invalidate();
+        mStrokeTextView.setTextColor(mStrokeColor);
     }
 
     /** 设置描边颜色 */
     public void setStrokeColor(@NonNull ColorStateList color) {
         mStrokeColor = color;
-        invalidate();
+        mStrokeTextView.setTextColor(mStrokeColor);
     }
 
     /** 获取描边颜色 */
@@ -251,7 +251,9 @@ public class XMStrokeTextView extends AppCompatTextView {
     /** 设置描边宽度，单位：px */
     public void setStrokeWidth(float width) {
         mStrokeWidth = width;
-        invalidate();
+
+        TextPaint strokePaint = mStrokeTextView.getPaint();
+        strokePaint.setStrokeWidth(mStrokeWidth);
     }
 
     /** 获取描边宽度，单位：px */
@@ -267,6 +269,8 @@ public class XMStrokeTextView extends AppCompatTextView {
     /** 设置是否自动填充空格适配 */
     public void setAutoFitSpace(boolean autoFitSpace) {
         this.autoFitSpace = autoFitSpace;
+
+        invalidate();
     }
 
     protected TextView getStrokeTextView() {
