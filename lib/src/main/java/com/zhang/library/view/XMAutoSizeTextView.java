@@ -3,6 +3,7 @@ package com.zhang.library.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
@@ -17,8 +18,6 @@ public class XMAutoSizeTextView extends AppCompatTextView {
 
     /** 自适应字号是否可用 */
     private boolean isAutoSizeEnabled;
-    /** 自适应字号最大显示行数 */
-    private int mAutoSizeMaxLine;
     /** 原始设置的字号大小 */
     private float mOriginalTextSize;
 
@@ -40,7 +39,6 @@ public class XMAutoSizeTextView extends AppCompatTextView {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.XMAutoSizeTextView);
 
         isAutoSizeEnabled = a.getBoolean(R.styleable.XMAutoSizeTextView_autoSizeEnable, true);
-        mAutoSizeMaxLine = a.getInt(R.styleable.XMAutoSizeTextView_autoSizeMaxLine, 1);
 
         a.recycle();
 
@@ -55,18 +53,12 @@ public class XMAutoSizeTextView extends AppCompatTextView {
         return isAutoSizeEnabled;
     }
 
-    public void setAutoSizeMaxLine(int maxLine) {
-        this.mAutoSizeMaxLine = maxLine;
-    }
-
-    public int getAutoSizeMaxLine() {
-        return mAutoSizeMaxLine;
-    }
 
     @Override
     public void setText(CharSequence text, BufferType type) {
         if (mOriginalTextSize > 0)
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mOriginalTextSize);
+
         super.setText(text, type);
     }
 
@@ -77,16 +69,23 @@ public class XMAutoSizeTextView extends AppCompatTextView {
         processFitAutoSize();
     }
 
+    /** 自适应字号 */
     private void processFitAutoSize() {
         if (!isAutoSizeEnabled)
             return;
 
-        int lineCount = getLineCount();
+        if (this.getLineCount() <= 1)
+            return;
 
-        if (lineCount > mAutoSizeMaxLine) {
-            float size = getTextSize();
-            size--;
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        Paint paint = getPaint();
+        float textSize = getTextSize();
+
+        int availableTextViewWidth = this.getWidth() - getPaddingLeft() - getPaddingRight();
+        float measureWidth = paint.measureText(this.getText().toString());
+        if (measureWidth > availableTextViewWidth) {
+            textSize = textSize * ((float) availableTextViewWidth / measureWidth);
         }
+
+        this.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
 }
