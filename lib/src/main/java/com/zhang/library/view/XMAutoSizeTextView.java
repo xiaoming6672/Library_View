@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
@@ -80,7 +81,18 @@ public class XMAutoSizeTextView extends AppCompatTextView {
         Paint paint = getPaint();
         float textSize = getTextSize();
 
-        int availableTextViewWidth = this.getWidth() - getPaddingLeft() - getPaddingRight();
+        Drawable[] drawables = getCompoundDrawables();
+        int drawableWidth = 0;
+        if (drawables[0] != null) {
+            drawableWidth += drawables[0].getIntrinsicWidth();
+            drawableWidth += getCompoundDrawablePadding();
+        }
+        if (drawables[2] != null) {
+            drawableWidth += drawables[2].getIntrinsicWidth();
+            drawableWidth += getCompoundDrawablePadding();
+        }
+
+        int availableTextViewWidth = this.getWidth() - getPaddingLeft() - getPaddingRight() - drawableWidth;
         float measureWidth = paint.measureText(this.getText().toString());
         if (measureWidth > availableTextViewWidth) {
             textSize = textSize * ((float) availableTextViewWidth / measureWidth);
