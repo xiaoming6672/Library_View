@@ -5,10 +5,10 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 30
-        versionCode 26
-        versionName "1.9.0"
+        versionCode 28
+        versionName "2.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -21,8 +21,25 @@ android {
         }
     }
 
-    lintOptions{
+    viewBinding {
+        enabled true
+    }
+
+    lintOptions {
         disable 'MissingTranslation'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    productFlavors {
+        // 指定apk名字输出格式 applicationVariants、libraryVariants以及testVariants，他们分别适用于app、library、app和library都适用。
+        android.libraryVariants.all { variant ->
+            variant.outputs.all {
+                outputFileName = "${rootProject.name}-${variant.buildType.name}-V${defaultConfig.versionName}.aar"
+            }
+        }
     }
 }
 
@@ -36,8 +53,10 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    api 'androidx.recyclerview:recyclerview:1.2.0-alpha06'
-    api 'com.github.xiaoming6672:Library_utils:1.0.9'
-    api 'com.github.xiaoming6672:Library_adapter:1.1.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
+    implementation 'com.github.xiaoming6672:Library_utils:1.2.6'
+    implementation 'com.github.xiaoming6672:Library_adapter:2.2.0'
+    implementation 'com.github.xiaoming6672:Library_common:1.2.3'
 }

@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.zhang.library.utils.context.ContextUtils;
+
 /**
  * 自定义RecyclerView
  *
@@ -20,25 +22,25 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 public class XMRecyclerView extends RecyclerView {
 
     public XMRecyclerView(@NonNull Context context) {
-        super(context);
-
-        init();
+        this(context, null);
     }
 
     public XMRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-
-        init();
+        this(context, attrs, R.attr.recyclerViewStyle);
     }
 
     public XMRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
+        if (isInEditMode())
+            ContextUtils.set(context.getApplicationContext());
+
         init();
     }
 
     private void init() {
-        setLinearLayoutManager(VERTICAL);
+        if (getLayoutManager() == null)
+            setLinearLayoutManager(VERTICAL);
     }
 
     //<editor-fold desc="Getter and Setter of LayoutManger">
