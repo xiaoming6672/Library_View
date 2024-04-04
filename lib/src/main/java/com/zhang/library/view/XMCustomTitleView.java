@@ -90,24 +90,24 @@ public class XMCustomTitleView extends BaseAppView {
         if (attrs == null)
             return;
 
-        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CustomTitleView);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.XMCustomTitleView);
 
-        isAutoFitStatusBar = array.getBoolean(R.styleable.CustomTitleView_autoFitStatusBar, true);
+        isAutoFitStatusBar = array.getBoolean(R.styleable.XMCustomTitleView_autoFitStatusBar, true);
 
-        mBackRes = array.getDrawable(R.styleable.CustomTitleView_backRes);
-        isHideBack = array.getBoolean(R.styleable.CustomTitleView_hideBack, false);
-        mBackTint = array.getColorStateList(R.styleable.CustomTitleView_backTint);
+        mBackRes = array.getDrawable(R.styleable.XMCustomTitleView_backRes);
+        isHideBack = array.getBoolean(R.styleable.XMCustomTitleView_hideBack, false);
+        mBackTint = array.getColorStateList(R.styleable.XMCustomTitleView_backTint);
 
-        mTitleName = array.getString(R.styleable.CustomTitleView_titleName);
-        mTitleColor = array.getColorStateList(R.styleable.CustomTitleView_titleTextColor);
-        mTitleSize = array.getDimension(R.styleable.CustomTitleView_titleTextSize, ResUtils.dp2px(18));
-        isTitleBold = array.getBoolean(R.styleable.CustomTitleView_titleBold, true);
+        mTitleName = array.getString(R.styleable.XMCustomTitleView_titleName);
+        mTitleColor = array.getColorStateList(R.styleable.XMCustomTitleView_titleTextColor);
+        mTitleSize = array.getDimension(R.styleable.XMCustomTitleView_titleTextSize, ResUtils.dp2px(18));
+        isTitleBold = array.getBoolean(R.styleable.XMCustomTitleView_titleBold, true);
 
-        mFunctionIcon = array.getDrawable(R.styleable.CustomTitleView_functionIcon);
-        mFunctionName = array.getString(R.styleable.CustomTitleView_functionName);
-        mFunctionColor = array.getColorStateList(R.styleable.CustomTitleView_functionTextColor);
-        mFunctionSize = array.getDimension(R.styleable.CustomTitleView_functionTextSize, ResUtils.dp2px(14));
-        mFunctionOffset = array.getDimension(R.styleable.CustomTitleView_functionOffset, ResUtils.dp2px(15));
+        mFunctionIcon = array.getDrawable(R.styleable.XMCustomTitleView_functionIcon);
+        mFunctionName = array.getString(R.styleable.XMCustomTitleView_functionName);
+        mFunctionColor = array.getColorStateList(R.styleable.XMCustomTitleView_functionTextColor);
+        mFunctionSize = array.getDimension(R.styleable.XMCustomTitleView_functionTextSize, ResUtils.dp2px(14));
+        mFunctionOffset = array.getDimension(R.styleable.XMCustomTitleView_functionOffset, ResUtils.dp2px(15));
 
         array.recycle();
     }
