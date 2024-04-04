@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
+import com.zhang.library.utils.context.ContextUtils;
+
 /**
  * 自适应高度图片控件，等比例拉伸控件高度
  *
@@ -14,17 +16,19 @@ import androidx.appcompat.widget.AppCompatImageView;
 public class XMAutoHeightImageView extends AppCompatImageView {
 
     public XMAutoHeightImageView(Context context) {
-        super(context);
-        init(context, null);
+        this(context, null);
     }
 
     public XMAutoHeightImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs);
+        this(context, attrs, 0);
     }
 
     public XMAutoHeightImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        if (isInEditMode())
+            ContextUtils.set(context.getApplicationContext());
+
         init(context, attrs);
     }
 

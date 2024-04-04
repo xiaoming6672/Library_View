@@ -43,4 +43,36 @@
         <attr name="autoSizeMaxLine" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="CustomTitleView">
+        <!--自动适配状态栏高度，默认不适配-->
+        <attr name="autoFitStatusBar" format="boolean" />
+
+        <!--返回键-->
+        <attr name="backRes" format="reference" />
+        <!--隐藏返回键，默认不隐藏-->
+        <attr name="hideBack" format="boolean" />
+        <!--返回键的色调-->
+        <attr name="backTint" format="color" />
+
+        <!--标题名称-->
+        <attr name="titleName" format="string|reference" />
+        <!--标题字色，默认黑色-->
+        <attr name="titleTextColor" format="reference|color" />
+        <!--标题字号，默认18sp-->
+        <attr name="titleTextSize" format="dimension" />
+        <!--标题是否加粗，默认加粗-->
+        <attr name="titleBold" format="boolean" />
+
+        <!--右侧功能图标-->
+        <attr name="functionIcon" format="reference" />
+        <!--右侧功能名-->
+        <attr name="functionName" format="string|reference" />
+        <!--右侧功能名字色，默认黑色-->
+        <attr name="functionTextColor" format="color|reference" />
+        <!--右侧功能名字号，默认14sp-->
+        <attr name="functionTextSize" format="dimension" />
+        <!--右侧功能偏移量-->
+        <attr name="functionOffset" format="dimension" />
+    </declare-styleable>
+
 </resources>

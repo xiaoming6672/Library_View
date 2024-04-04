@@ -16,15 +16,18 @@ import com.zhang.library.utils.context.ResUtils;
 public class XMAutoFitStatusHeightView extends View {
 
     public XMAutoFitStatusHeightView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public XMAutoFitStatusHeightView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public XMAutoFitStatusHeightView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        if (isInEditMode())
+            ResUtils.set(context.getApplicationContext());
     }
 
     @Override

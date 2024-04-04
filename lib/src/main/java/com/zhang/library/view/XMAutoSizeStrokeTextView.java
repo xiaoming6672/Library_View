@@ -2,6 +2,8 @@ package com.zhang.library.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
@@ -38,16 +40,39 @@ public class XMAutoSizeStrokeTextView extends XMStrokeTextView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        processFitAutoSize();
+    }
+
+
+    /** 自适应字号 */
+    private void processFitAutoSize() {
         if (!isAutoSizeEnabled)
             return;
 
-        int lineCount = getLineCount();
+        if (this.getLineCount() <= 1)
+            return;
 
-        if (lineCount > 1) {
-            float size = getTextSize();
-            size--;
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        Paint paint = getPaint();
+        float textSize = getTextSize();
+
+        Drawable[] drawables = getCompoundDrawables();
+        int drawableWidth = 0;
+        if (drawables[0] != null) {
+            drawableWidth += drawables[0].getIntrinsicWidth();
+            drawableWidth += getCompoundDrawablePadding();
         }
+        if (drawables[2] != null) {
+            drawableWidth += drawables[2].getIntrinsicWidth();
+            drawableWidth += getCompoundDrawablePadding();
+        }
+
+        int availableTextViewWidth = this.getWidth() - getPaddingLeft() - getPaddingRight() - drawableWidth;
+        float measureWidth = paint.measureText(this.getText().toString());
+        if (measureWidth > availableTextViewWidth) {
+            textSize = textSize * ((float) availableTextViewWidth / measureWidth);
+        }
+
+        this.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
 
 }
