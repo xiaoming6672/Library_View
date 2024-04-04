@@ -43,7 +43,7 @@
         <attr name="autoSizeMaxLine" format="integer" />
     </declare-styleable>
 
-    <declare-styleable name="CustomTitleView">
+    <declare-styleable name="XMCustomTitleView">
         <!--自动适配状态栏高度，默认不适配-->
         <attr name="autoFitStatusBar" format="boolean" />
 
