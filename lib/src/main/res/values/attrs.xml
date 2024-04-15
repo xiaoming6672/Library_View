@@ -75,4 +75,26 @@
         <attr name="functionOffset" format="dimension" />
     </declare-styleable>
 
+
+    <attr name="fitsSystemStyle">
+        <enum name="none" value="0" />
+        <enum name="padding" value="1" />
+        <enum name="margin" value="2" />
+    </attr>
+
+    <declare-styleable name="XMFitsSystemConstraintLayout">
+        <attr name="fitsSystemStyle" />
+    </declare-styleable>
+
+    <declare-styleable name="XMFitsSystemFrameLayout">
+        <attr name="fitsSystemStyle" />
+    </declare-styleable>
+
+    <declare-styleable name="XMFitsSystemLinearLayout">
+        <attr name="fitsSystemStyle" />
+    </declare-styleable>
+
+    <declare-styleable name="XMFitsSystemRelativeLayout">
+        <attr name="fitsSystemStyle" />
+    </declare-styleable>
 </resources>
